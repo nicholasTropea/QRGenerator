@@ -44,7 +44,7 @@ function main() {
   rawDataBits = completeRawDataBits(rawDataBits, selectedEntry);
   console.log("Final raw data bits: " + rawDataBits + "\n");
 
-  let errorBits = generateMessagePolynomial(rawDataBits, selectedEntry);
+  let errorBits = generateMessagePolynomials(rawDataBits, selectedEntry);
 
   console.log(errorBits.length);
   let output = "[ ";
@@ -228,7 +228,7 @@ function generateMessagePolynomials(bits, entry) {
     for (let j = 0; j < entry.group1DataCodewords * 8; j += 8) {
       let codeword = "";
 
-      for (let k = 0; k < 8; k++) codeword += bits[j];
+      for (let k = j; k < j + 8; k++) codeword += bits[k];
 
       result.push(parseInt(codeword, 2));
     }
@@ -239,7 +239,7 @@ function generateMessagePolynomials(bits, entry) {
     for (let j = 0; j < entry.group2DataCodewords * 8; j += 8) {
       let codeword = "";
 
-      for (let k = 0; k < 8; k++) codeword += bits[j];
+      for (let k = j; k < j + 8; k++) codeword += bits[k];
 
       result.push(parseInt(codeword, 2));
     }
@@ -284,7 +284,7 @@ function divideMessagePolynomial(messagePolynomial, level, version) {
   }
   
   // The remainder is the error correction codewords
-  let errorCorrectionCodewords = dividend.slice(messagePolynomial.length);
+  errorCorrectionCodewords = dividend.slice(messagePolynomial.length);
   
   return errorCorrectionCodewords;
 }
