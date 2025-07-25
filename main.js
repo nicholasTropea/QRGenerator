@@ -35,22 +35,22 @@ function main() {
   let version = versionBinarySearch(level, inputLen, 20, 1, 40); // Find minimum level required
   console.log("Version: " + version + "\nCorrection level: " + level + "\n");
 
+  let selectedEntry = LEVEL_VERSION_DATA[level][version]; // Get table entry relative to this level and version
+
   let rawDataBits = modeEncoder(input, inputLen, version);
   if (rawDataBits === INVALID_CHARACTER) return;
   console.log("Encoded string: " + rawDataBits + "\n");
 
-  rawDataBits = completeRawDataBits(rawDataBits, level, version);
+  rawDataBits = completeRawDataBits(rawDataBits, selectedEntry);
   console.log("Final raw data bits: " + rawDataBits + "\n");
 
-  let messagePolynomial = generateMessagePolynomial(rawDataBits);
+  let errorBits = generateMessagePolynomial(rawDataBits, selectedEntry);
 
-  // console.log(messagePolynomial.length);
-  // let output = "[ ";
-  // for (let exp of messagePolynomial) output += exp + " ";
-  // output += "]";
-  // console.log(output) 
-
-  
+  console.log(errorBits.length);
+  let output = "[ ";
+  for (let exp of errorBits) output += exp + " ";
+  output += "]";
+  console.log(output)   
 }
 
 /* ######################## UTILITIES ######################## */
@@ -165,8 +165,8 @@ function calculateCharacterCountBits(len, version) {
 
 /* ######################## TERMINATOR AND PAD BYTES FUNCTIONS ######################## */
 
-function completeRawDataBits(str, level, version) {
-  let requiredBits = LEVEL_VERSION_DATA[level][version].totalDataCodewords * 8;
+function completeRawDataBits(str, entry) {
+  let requiredBits = entry.totalDataCodewords * 8;
 
   str = addTerminatorBits(str, requiredBits);
   str = makeMultipleOf8(str, requiredBits);
@@ -220,18 +220,139 @@ function addPadBytes(str, totalBits) {
 
 /* ######################## REED-SOLOMON ERROR CORRECTION FUNCTIONS ######################## */
 
-function generateMessagePolynomial(bits) {
+function generateMessagePolynomials(bits, entry) {
   let result = [];
 
-  for (let i = 0; i < bits.length; i += 8) {
-    let codeword = "";
+  // Iterate over first group
+  for (let i = 0; i < entry.group1Blocks; i++) {
+    for (let j = 0; j < entry.group1DataCodewords * 8; j += 8) {
+      let codeword = "";
 
-    for (let j = i; j < i + 8; j++) {
-      codeword += bits[j];
+      for (let k = 0; k < 8; k++) codeword += bits[j];
+
+      result.push(parseInt(codeword, 2));
     }
+  }
 
-    result.push(parseInt(codeword, 2));
+  // Iterate over second group (if there is one)
+  for (let i = 0; i < entry.group2Blocks; i++) {
+    for (let j = 0; j < entry.group2DataCodewords * 8; j += 8) {
+      let codeword = "";
+
+      for (let k = 0; k < 8; k++) codeword += bits[j];
+
+      result.push(parseInt(codeword, 2));
+    }
   }
 
   return result;
+}
+
+function divideMessagePolynomial(messagePolynomial, level, version) {
+  // Get the number of error correction codewords needed
+  let errorCorrectionCodewords = LEVEL_VERSION_DATA[level][version].errorCorrectionCodewords;
+  
+  // Get the generator polynomial for this number of error correction codewords
+  let generatorPolynomial = GEN_POLYNOMIALS[errorCorrectionCodewords];
+  
+  // Create a copy of the message polynomial and pad with zeros
+  let dividend = [...messagePolynomial];
+  
+  // Pad the dividend with zeros (degree of generator polynomial)
+  for (let i = 0; i < generatorPolynomial.length - 1; i++) {
+    dividend.push(0);
+  }
+  
+  // Perform polynomial long division in GF(256)
+  for (let i = 0; i < messagePolynomial.length; i++) {
+    let leadCoeff = dividend[i];
+    
+    if (leadCoeff !== 0) {
+      // Convert to log form for multiplication
+      let logLeadCoeff = LOG_ANTILOG_TABLE.log[leadCoeff];
+      
+      // Multiply generator polynomial by lead coefficient and subtract
+      for (let j = 0; j < generatorPolynomial.length; j++) {
+        if (generatorPolynomial[j] !== 0) {
+          // Multiply in log domain (add logs)
+          let logProduct = (logLeadCoeff + generatorPolynomial[j]) % 255;
+          // Convert back to antilog and XOR (subtract in GF(256))
+          dividend[i + j] ^= LOG_ANTILOG_TABLE.antilog[logProduct];
+        }
+      }
+    }
+  }
+  
+  // The remainder is the error correction codewords
+  let errorCorrectionCodewords = dividend.slice(messagePolynomial.length);
+  
+  return errorCorrectionCodewords;
+}
+
+
+
+
+
+
+
+
+
+// Alternative implementation if your generator polynomial is stored differently
+function divideMessagePolynomialAlternative(messagePolynomial, generatorPolynomial) {
+  // Create a copy of the message polynomial and pad with zeros
+  let dividend = [...messagePolynomial];
+  
+  // Pad the dividend with zeros (degree of generator polynomial)
+  for (let i = 0; i < generatorPolynomial.length - 1; i++) {
+    dividend.push(0);
+  }
+  
+  // Perform polynomial long division in GF(256)
+  for (let i = 0; i < messagePolynomial.length; i++) {
+    let leadCoeff = dividend[i];
+    
+    if (leadCoeff !== 0) {
+      // Get the log of the lead coefficient
+      let logLeadCoeff = LOG_ANTILOG_TABLE.log[leadCoeff];
+      
+      // For each term in the generator polynomial
+      for (let j = 0; j < generatorPolynomial.length; j++) {
+        if (generatorPolynomial[j] !== 0) {
+          // Multiply the generator term by the lead coefficient
+          // In GF(256), multiplication is done by adding logs
+          let logResult = (logLeadCoeff + LOG_ANTILOG_TABLE.log[generatorPolynomial[j]]) % 255;
+          let result = LOG_ANTILOG_TABLE.antilog[logResult];
+          
+          // Subtract (XOR) from the dividend
+          dividend[i + j] ^= result;
+        }
+      }
+    }
+  }
+  
+  // Return the remainder (error correction codewords)
+  return dividend.slice(messagePolynomial.length);
+}
+
+// Helper function to get generator polynomial coefficients
+function getGeneratorPolynomial(numErrorCorrectionCodewords) {
+  // This assumes your GEN_POLYNOMIALS contains the coefficients
+  // If it contains exponents instead, you'll need to convert them
+  return GEN_POLYNOMIALS[numErrorCorrectionCodewords];
+}
+
+// Usage example - add this to your main function:
+function addToMain() {
+  // After generating the message polynomial:
+  let messagePolynomial = generateMessagePolynomial(rawDataBits);
+  
+  // Perform polynomial division to get error correction codewords
+  let errorCorrectionCodewords = divideMessagePolynomial(messagePolynomial, level, version);
+  
+  console.log("Message polynomial: " + messagePolynomial);
+  console.log("Error correction codewords: " + errorCorrectionCodewords);
+  
+  // Combine message and error correction codewords
+  let finalCodewords = [...messagePolynomial, ...errorCorrectionCodewords];
+  console.log("Final codewords: " + finalCodewords);
 }
