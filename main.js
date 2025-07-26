@@ -9,14 +9,15 @@ const INVALID_CHARACTER = -2;
 import {
   MODE_INDICATORS,
   ALPHANUMERIC_TABLE,
-  LEVEL_VERSION_DATA
+  LEVEL_VERSION_DATA,
+  VERSION_REMAINDER_BITS
 } from "./raw_data_encoding_constants.js";
 
 // Reed-Solomon error correction
 import {
   LOG_ANTILOG_TABLE,
   GEN_POLYNOMIALS
-} from "./reed_solomon_constants.js";  
+} from "./reed_solomon_constants.js";
 
 /* ######################## MAIN ######################## */
 
@@ -24,15 +25,15 @@ import {
 main();
 
 function main() {
-  let input = "hello world";
+  let input = "HELLO1HELLO2HELLO3HELLO4HELLO5HELLO6HELLO7HELLO8HELLO9HELLO0";
   let inputLen = input.length;
   input = input.toUpperCase();
 
   let err = validateInput(input, inputLen);
   if (err === INVALID_LENGTH) return;
 
-  let level = 'M'/*getLevel(inputLen)*/;
-  let version = 1;/*versionBinarySearch(level, inputLen, 20, 1, 40); // Find minimum level required*/
+  let level = getLevel(inputLen);
+  let version = versionBinarySearch(level, inputLen, 20, 1, 40); // Find minimum level required
   console.log("Version: " + version + "\nCorrection level: " + level + "\n");
 
   let selectedEntry = LEVEL_VERSION_DATA[level][version]; // Get table entry relative to this level and version
@@ -47,11 +48,9 @@ function main() {
   let messagePolynomials = generateMessagePolynomials(rawDataBits, selectedEntry);
   let errorBits = generateErrorCorrectionBits(messagePolynomials, selectedEntry);
 
-  console.log(errorBits.length);
-  let output = "[ ";
-  for (let exp of errorBits) output += exp + " ";
-  output += "]";
-  console.log(output)   
+  let finalMessage = composeFinalMessage(rawDataBits, errorBits, selectedEntry, version);
+
+  console.log("Final message: " + finalMessage + "\n");
 }
 
 /* ######################## UTILITIES ######################## */
@@ -297,4 +296,89 @@ function divideMessagePolynomial(messagePolynomial, entry) {
   errorCorrectionCodewords = dividend.slice(messagePolynomial.length);
   
   return errorCorrectionCodewords;
+}
+
+/* ######################## FINAL MESSAGE COMPOSITION FUNCTIONS ######################## */
+
+function composeFinalMessage(dataCodewords, errorCodewords, entry, version) {
+  dataCodewords = splitIntoBlocks(dataCodewords, entry);
+
+  // If only 1 group it still removes the inner array
+  dataCodewords = interleaveCodewords(dataCodewords);
+  errorCodewords = interleaveCodewords(errorCodewords);
+
+  let finalCodewords = [...dataCodewords, ...errorCodewords];
+
+  let finalMessageString = binaryFromCodewordArray(finalCodewords);
+  finalMessageString = addRemainderBits(finalMessageString, version);
+
+  return finalMessageString;
+}
+
+function splitIntoBlocks(str, entry) {
+  let result = [];
+  let bitIndex = 0;
+
+  // Iterate over first group
+  for (let i = 0; i < entry.group1Blocks; i++) {
+    let block = [];
+
+    for (let j = 0; j < entry.group1DataCodewords; j++) {
+      let codeword = "";
+      
+      for (let k = bitIndex; k < bitIndex + 8; k++) codeword += str[k];
+
+      bitIndex += 8;
+
+      block.push(parseInt(codeword, 2));
+    }
+
+    result.push(block);
+  }
+
+  // Iterate over second group (if any)
+  for (let i = 0; i < entry.group2Blocks; i++) {
+    let block = [];
+
+    for (let j = 0; j < entry.group2DataCodewords; j++) {
+      let codeword = "";
+      
+      for (let k = bitIndex; k < bitIndex + 8; k++) codeword += str[k];
+
+      bitIndex += 8;
+
+      block.push(parseInt(codeword, 2));
+    }
+
+    result.push(block);
+  }
+
+  return result;
+}
+
+function interleaveCodewords(codewords) {
+  let result = [];
+
+  while (codewords.some(arr => arr.length > 0)) {
+    for (let i = 0; i < codewords.length; i++) {
+      if (codewords[i].length != 0) result.push(codewords[i].shift());
+    }
+  }
+
+  return result;
+}
+
+function binaryFromCodewordArray(arr) {
+  let result = "";
+
+  for (let codeword of arr) {
+    let str = codeword.toString(2);
+    result += str.padStart(8, '0');
+  }
+
+  return result;
+}
+
+function addRemainderBits(str, version) {
+  return str + '0'.repeat(VERSION_REMAINDER_BITS[version]);
 }
