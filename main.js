@@ -3,6 +3,7 @@
 const INVALID_LENGTH = -1;
 const INVALID_CHARACTER = -2;
 const RESERVED = '*';
+const EMPTY_MODULE = '-';
 
 /* ######################## IMPORTS ######################## */
 
@@ -27,7 +28,7 @@ import {
 main();
 
 function main() {
-  let input = "Ciao topoltopolonetopolonetopolonetopolonetopolonetopolonetopolonetopolonetopolonetopolonetopoloneone";
+  let input = "Ciao topo";
   let inputLen = input.length;
   input = input.toUpperCase();
 
@@ -54,7 +55,7 @@ function main() {
 
   console.log("Final message: " + finalMessage + "\n");
 
-  let matrix = generateMatrix(finalMessage, level, version);
+  let matrix = generateMatrix(finalMessage, version);
   printMatrix(matrix);
 }
 
@@ -405,10 +406,10 @@ function addRemainderBits(str, version) {
 
 /* ######################## MATRIX GENERATION FUNCTIONS ######################## */
 
-function generateMatrix(bitstream, level, version) {
+function generateMatrix(bitstream, version) {
   let size = (version - 1) * 4 + 21;
 
-  let matrix = Array.from({ length : size }, () => Array(size).fill('-')); // Initializes a size x size matrix of undefined elements
+  let matrix = Array.from({ length : size }, () => Array(size).fill(EMPTY_MODULE)); // Initializes a size x size matrix of undefined elements
 
   addFinderPatterns(matrix);
   addSeparators(matrix);
@@ -416,6 +417,7 @@ function generateMatrix(bitstream, level, version) {
   addTimingPatterns(matrix);
   matrix[size - 8][8] = 1; // Add dark module
   addReservedModules(matrix, version);
+  addDataModules(matrix, bitstream);
 
   return matrix;
 }
@@ -551,5 +553,49 @@ function addReservedModules(matrix, version) {
   // Bottom-Left area
   for (let i = size - 11; i < size - 8; i++) {
     for (let j = 0; j < 6; j++) matrix[i][j] = RESERVED;
+  }
+}
+
+function addDataModules(matrix, bitstream) {
+  const UPWARDS = true;
+  const DOWNWARDS = false;
+  
+  let size = matrix.length;
+  let rightCol = size - 1;
+  let dir = UPWARDS;
+
+  let bits = bitstream.split("").map(Number); // Convert bitstream string to array of numbers
+
+  while (rightCol - 1 !== -2) {
+    if (dir === UPWARDS) {
+      for (let row = size - 1; row >= 0; row--) {
+        for (let col = rightCol; col >= rightCol - 1; col--) {
+          if (matrix[row][col] === EMPTY_MODULE) {
+            matrix[row][col] = bits.shift();
+            // printMatrix(matrix);
+            // console.log(bits.length);
+          }
+          else continue;
+        }
+      }
+
+      dir = DOWNWARDS;
+    }
+    else {
+      for (let row = 0; row < size; row++) {
+        for (let col = rightCol; col >= rightCol - 1; col--) {
+          if (matrix[row][col] === EMPTY_MODULE) {
+            matrix[row][col] = bits.shift();
+            // printMatrix(matrix);
+            // console.log(bits.length);
+          }
+          else continue;
+        }
+      }
+
+      dir = UPWARDS;
+    }
+
+    rightCol = rightCol == 8 ? 5 : rightCol - 2;
   }
 }
