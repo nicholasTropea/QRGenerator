@@ -10,7 +10,8 @@ import {
   MODE_INDICATORS,
   ALPHANUMERIC_TABLE,
   LEVEL_VERSION_DATA,
-  VERSION_REMAINDER_BITS
+  VERSION_REMAINDER_BITS,
+  ALIGNMENT_PATTERN_LOCATIONS
 } from "./raw_data_encoding_constants.js";
 
 // Reed-Solomon error correction
@@ -25,7 +26,7 @@ import {
 main();
 
 function main() {
-  let input = "HELLO1HELLO2HELLO3HELLO4HELLO5HELLO6HELLO7HELLO8HELLO9HELLO0";
+  let input = "Ciao topoltopolonetopolonetopolonetopolonetopolonetopolonetopolonetopolonetopolonetopolonetopoloneone";
   let inputLen = input.length;
   input = input.toUpperCase();
 
@@ -51,6 +52,24 @@ function main() {
   let finalMessage = composeFinalMessage(rawDataBits, errorBits, selectedEntry, version);
 
   console.log("Final message: " + finalMessage + "\n");
+
+  let matrix = generateMatrix(finalMessage, level, version);
+  printMatrix(matrix);
+}
+
+/* ######################## DEBUG ######################## */
+
+function printMatrix(matrix) {
+  let output = "";
+
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix.length; j++) {
+      if (j == matrix.length - 1) output += matrix[i][j] + "\n";
+      else output += matrix[i][j] + " ";
+    }
+  }
+
+  console.log(output + "\n");
 }
 
 /* ######################## UTILITIES ######################## */
@@ -381,4 +400,120 @@ function binaryFromCodewordArray(arr) {
 
 function addRemainderBits(str, version) {
   return str + '0'.repeat(VERSION_REMAINDER_BITS[version]);
+}
+
+/* ######################## MATRIX GENERATION FUNCTIONS ######################## */
+
+function generateMatrix(bitstream, level, version) {
+  let size = (version - 1) * 4 + 21;
+
+  let matrix = Array.from({ length : size }, () => Array(size).fill('-')); // Initializes a size x size matrix of undefined elements
+
+  addFinderPatterns(matrix);
+  addSeparators(matrix);
+  addAlignmentPatterns(matrix, version);
+  addTimingPatterns(matrix);
+
+  return matrix;
+}
+
+function addFinderPatterns(matrix) {
+  function makeFinderFromTopLeft(matrix, start) {
+    let x = start.x;
+    let y = start.y;
+    
+    // Adds borders
+    for (let i = x; i < x + 7; i++) matrix[y][i] = 1;
+    for (let i = x; i < x + 7; i++) matrix[y + 6][i] = 1;
+    for (let i = y + 1; i < y + 6; i++) matrix[i][x] = 1;
+    for (let i = y + 1; i < y + 6; i++) matrix[i][x + 6] = 1;
+
+    // Adds central square
+    for (let i = y + 2; i < y + 5; i++) {
+      for (let j = x + 2; j < x + 5; j++) matrix[i][j] = 1; 
+    }
+
+    // Adds white borders
+    for (let i = x + 1; i < x + 6; i++) matrix[y + 1][i] = 0;
+    for (let i = x + 1; i < x + 6; i++) matrix[y + 5][i] = 0;
+    for (let i = y + 2; i < y + 5; i++) matrix[i][x + 1] = 0
+    for (let i = y + 2; i < y + 5; i++) matrix[i][x + 5] = 0;
+  }
+  
+  let size = matrix.length;
+
+  makeFinderFromTopLeft(matrix, {x : 0, y : 0}); // Top-Left
+  makeFinderFromTopLeft(matrix, {x : size - 7, y : 0}); // Top-Right
+  makeFinderFromTopLeft(matrix, {x : 0, y : size - 7}); // Bottom-Left
+}
+
+function addSeparators(matrix) {
+  let size = matrix.length;
+  
+  // Top-Left separators
+  for (let i = 0; i < 8; i++) matrix[7][i] = 0;
+  for (let i = 0; i < 7; i++) matrix[i][7] = 0;
+
+  // Top-Right separators
+  for (let i = size - 8; i < size; i++) matrix[7][i] = 0;
+  for (let i = 0; i < 7; i++) matrix[i][size - 8] = 0;
+
+  // Bottom-Left separators
+  for (let i = 0; i < 8; i++) matrix[size - 8][i] = 0;
+  for (let i = size - 7; i < size; i++) matrix[i][7] = 0;
+}
+
+function addAlignmentPatterns(matrix, version) {
+  function makeAlignmentPatternByCenter(matrix, center) {
+    let size = matrix.length;
+
+    // Convert to top-left coordinates
+    let x = center.x - 2;
+    let y = center.y - 2;
+
+    // Check for interferences (don't include)
+    if (x <= 7 && y <= 7) return; // Top-Left interference
+    if (x <= 7 && y + 4 >= size - 8) return; // Bottom-Left interference
+    if (x + 4 >= size - 8 && y <= 7) return; // Top-Right interference
+
+    // Add black borders
+    for (let i = x; i < x + 5; i++) matrix[y][i] = 1;
+    for (let i = x; i < x + 5; i++) matrix[y + 4][i] = 1;
+    for (let i = y + 1; i < y + 4; i++) matrix[i][x] = 1;
+    for (let i = y + 1; i < y + 4; i++) matrix[i][x + 4] = 1;
+
+    // Add center
+    matrix[y + 2][x + 2] = 1;
+
+    // Add white borders
+    for (let i = x + 1; i < x + 4; i++) matrix[y + 1][i] = 0;
+    for (let i = x + 1; i < x + 4; i++) matrix[y + 3][i] = 0;
+    matrix[y + 2][x + 1] = 0;
+    matrix[y + 2][x + 3] = 0;
+  }
+
+  if (version === 1) return;
+
+  // Add all combinations of coordinates
+  for (let coord1 of ALIGNMENT_PATTERN_LOCATIONS[version]) {
+    for (let coord2 of ALIGNMENT_PATTERN_LOCATIONS[version]) {
+      makeAlignmentPatternByCenter(matrix, { x : coord1, y : coord2});
+    }
+  }
+}
+
+function addTimingPatterns(matrix) {
+  let size = matrix.length;
+  
+  // Add horizontal pattern
+  for (let i = 8; i < size - 8; i++) {
+    if (i % 2 === 0) matrix[6][i] = 1;
+    else matrix[6][i] = 0;
+  }
+
+  // Add vertical pattern
+  for (let i = 8; i < size - 8; i++) {
+    if (i % 2 === 0) matrix[i][6] = 1;
+    else matrix[i][6] = 0;
+  }
 }
