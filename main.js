@@ -2,6 +2,7 @@
 
 const INVALID_LENGTH = -1;
 const INVALID_CHARACTER = -2;
+const RESERVED = '*';
 
 /* ######################## IMPORTS ######################## */
 
@@ -413,6 +414,8 @@ function generateMatrix(bitstream, level, version) {
   addSeparators(matrix);
   addAlignmentPatterns(matrix, version);
   addTimingPatterns(matrix);
+  matrix[size - 8][8] = 1; // Add dark module
+  addReservedModules(matrix, version);
 
   return matrix;
 }
@@ -515,5 +518,38 @@ function addTimingPatterns(matrix) {
   for (let i = 8; i < size - 8; i++) {
     if (i % 2 === 0) matrix[i][6] = 1;
     else matrix[i][6] = 0;
+  }
+}
+
+function addReservedModules(matrix, version) {
+  let size = matrix.length;
+
+  // Top-Right strip
+  for (let i = size - 8; i < size; i++) matrix[8][i] = RESERVED;
+
+  // Top-Left strips
+  for (let i = 0; i < 9; i++) {
+    if (i === 6) continue;
+    matrix[i][8] = RESERVED;
+  }
+
+  for (let i = 0; i < 8; i++) {
+    if (i === 6) continue;
+    matrix[8][i] = RESERVED;
+  }
+
+  // Bottom-Left strip
+  for (let i = size - 7; i < size; i++) matrix[i][8] = RESERVED;
+
+  if (version < 7) return; // Early exit
+
+  // Top-Right area
+  for (let i = 0; i < 6; i++) {
+    for (let j = size - 11; j < size - 8; j++) matrix[i][j] = RESERVED;
+  }
+
+  // Bottom-Left area
+  for (let i = size - 11; i < size - 8; i++) {
+    for (let j = 0; j < 6; j++) matrix[i][j] = RESERVED;
   }
 }
