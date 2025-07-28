@@ -33,7 +33,7 @@ import {
 main();
 
 function main() {
-  let input = "Ciao topo bellissimo";
+  let input = `1 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 10`;
   let inputLen = input.length;
   input = input.toUpperCase();
 
@@ -48,35 +48,36 @@ function main() {
 
   let rawDataBits = modeEncoder(input, inputLen, version);
   if (rawDataBits === INVALID_CHARACTER) return;
-  console.log("Encoded string: " + rawDataBits + "\n");
 
   rawDataBits = completeRawDataBits(rawDataBits, selectedEntry);
-  console.log("Final raw data bits: " + rawDataBits + "\n");
 
   let messagePolynomials = generateMessagePolynomials(rawDataBits, selectedEntry);
   let errorBits = generateErrorCorrectionBits(messagePolynomials, selectedEntry);
 
   let finalMessage = composeFinalMessage(rawDataBits, errorBits, selectedEntry, version);
 
-  console.log("Final message: " + finalMessage + "\n");
-
-  let matrix = generateMatrix(finalMessage, version);
+  let matrix = generateMatrix(finalMessage, version, level);
   printMatrix(matrix);
 }
 
 /* ######################## DEBUG ######################## */
 
 function printMatrix(matrix) {
+  const WHITE_BG = '\x1b[47m';  // White background for black modules
+  const BLACK_BG = '\x1b[40m';  // Black background for white modules  
+  const RESET = '\x1b[0m';
   let output = "";
 
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix.length; j++) {
-      if (j == matrix.length - 1) output += matrix[i][j] + "\n";
-      else output += matrix[i][j] + " ";
+      if (matrix[i][j] === 1) output += BLACK_BG + "  " + RESET; // White for QR black modules
+      else output += WHITE_BG + "  " + RESET; // Black for QR white modules
     }
+
+    output += "\n";
   }
 
-  console.log(output + "\n");
+  console.log(output);
 }
 
 /* ######################## UTILITIES ######################## */
@@ -98,8 +99,8 @@ function printInvalidCharacterError(char) {
 }
 
 function copyMatrix(m1, m2) {
-  for (let i = 0; i < m1.size; i++) {
-    for (let j = 0; j < m1.size; j++) m2[i][j] = m1[i][j];
+  for (let i = 0; i < m1.length; i++) {
+    for (let j = 0; j < m1.length; j++) m2[i][j] = m1[i][j];
   }
 }
 
@@ -417,7 +418,7 @@ function addRemainderBits(str, version) {
 
 /* ######################## MATRIX GENERATION FUNCTIONS ######################## */
 
-function generateMatrix(bitstream, version) {
+function generateMatrix(bitstream, version, level) {
   let size = (version - 1) * 4 + 21;
 
   let matrix = Array.from({ length : size }, () => Array(size).fill(EMPTY_MODULE)); // Initializes a size x size matrix of undefined elements
@@ -434,7 +435,7 @@ function generateMatrix(bitstream, version) {
 
   addReservedModules(matrix, availabilityMatrix, version);
   addDataModules(matrix, bitstream);
-  calculateAndApplyMask(matrix, availabilityMatrix);
+  calculateAndApplyMask(matrix, availabilityMatrix, level);
   
   return matrix;
 }
@@ -696,6 +697,25 @@ function addDataModules(matrix, bitstream) {
 }
 
 function calculateAndApplyMask(matrix, availabilityMatrix, level) {
+  const size = matrix.length;
+
+  function addFormatString(maskNumber) {
+    const bits = FORMAT_INFO_STRINGS[maskNumber][level].split("").map(Number); // Convert format string to array
+
+    // Add top-left bits
+    for (let i = 0; i < 6; i++) testMatrix[8][i] = bits[i];
+    testMatrix[8][7] = bits[6];
+    testMatrix[8][8] = bits[7];
+    testMatrix[7][8] = bits[8];
+    for (let i = 0; i < 6; i++) testMatrix[i][8] = bits[14 - i];
+
+    // Add top-right bits
+    for (let i = 0; i < 8; i++) testMatrix[8][size - 1 - i] = bits[14 - i];
+
+    // Add bottom-left bits
+    for (let i = 0; i < 7; i++) testMatrix[size - 1 - i][8] = bits[i];
+  }
+  
   function calculatePenalty() {
     const FIRST_PENALTY_5_VALUE = 3;
     const FIRST_PENALTY_OVER_5_VALUE = 1;
@@ -712,22 +732,86 @@ function calculateAndApplyMask(matrix, availabilityMatrix, level) {
 
     // Calculates second penalty violations
     function checkSquare(row, col) {
-      if (matrix[row][col] !== matrix[row][col + 1]) return false; // Top-Right module
-      if (matrix[row][col] !== matrix[row + 1][col]) return false; // Bottom-Left module
-      if (matrix[row][col] !== matrix[row + 1][col + 1]) return false; // Bottom-Right module
+      if (col === size - 1 || row === size - 1) return false; // Early exit, last row or column
+
+      if (testMatrix[row][col] !== testMatrix[row][col + 1]) return false; // Top-Right module
+      if (testMatrix[row][col] !== testMatrix[row + 1][col]) return false; // Bottom-Left module
+      if (testMatrix[row][col] !== testMatrix[row + 1][col + 1]) return false; // Bottom-Right module
       return true;
     }
     
+    // Calculate third penalty patterns
+    function checkAbovePattern(row, col) {
+      if (testMatrix[row][col] === 1) {
+        if (testMatrix[row - 1][col] !== 0) return false;
+        if (testMatrix[row - 2][col] !== 1) return false;
+        if (testMatrix[row - 3][col] !== 1) return false;
+        if (testMatrix[row - 4][col] !== 1) return false;
+        if (testMatrix[row - 5][col] !== 0) return false;
+        if (testMatrix[row - 6][col] !== 1) return false;
+        if (testMatrix[row - 7][col] !== 0) return false;
+        if (testMatrix[row - 8][col] !== 0) return false;
+        if (testMatrix[row - 9][col] !== 0) return false;
+        if (testMatrix[row - 10][col] !== 0) return false;
+      }
+      else {
+        if (testMatrix[row - 1][col] !== 0) return false;
+        if (testMatrix[row - 2][col] !== 0) return false;
+        if (testMatrix[row - 3][col] !== 0) return false;
+        if (testMatrix[row - 4][col] !== 1) return false;
+        if (testMatrix[row - 5][col] !== 0) return false;
+        if (testMatrix[row - 6][col] !== 1) return false;
+        if (testMatrix[row - 7][col] !== 1) return false;
+        if (testMatrix[row - 8][col] !== 1) return false;
+        if (testMatrix[row - 9][col] !== 0) return false;
+        if (testMatrix[row - 10][col] !== 1) return false;
+      }
+
+      // Pattern found
+      return true;
+    }
+
+    function checkLeftPattern(row, col) {
+      if (testMatrix[row][col] === 1) {
+        if (testMatrix[row][col - 1] !== 0) return false;
+        if (testMatrix[row][col - 2] !== 1) return false;
+        if (testMatrix[row][col - 3] !== 1) return false;
+        if (testMatrix[row][col - 4] !== 1) return false;
+        if (testMatrix[row][col - 5] !== 0) return false;
+        if (testMatrix[row][col - 6] !== 1) return false;
+        if (testMatrix[row][col - 7] !== 0) return false;
+        if (testMatrix[row][col - 8] !== 0) return false;
+        if (testMatrix[row][col - 9] !== 0) return false;
+        if (testMatrix[row][col - 10] !== 0) return false;
+      }
+      else {
+        if (testMatrix[row][col - 1] !== 0) return false;
+        if (testMatrix[row][col - 2] !== 0) return false;
+        if (testMatrix[row][col - 3] !== 0) return false;
+        if (testMatrix[row][col - 4] !== 1) return false;
+        if (testMatrix[row][col - 5] !== 0) return false;
+        if (testMatrix[row][col - 6] !== 1) return false;
+        if (testMatrix[row][col - 7] !== 1) return false;
+        if (testMatrix[row][col - 8] !== 1) return false;
+        if (testMatrix[row][col - 9] !== 0) return false;
+        if (testMatrix[row][col - 10] !== 1) return false;
+      }
+
+      // Pattern found
+      return true;
+    }
+
     // Used to calculate the fourth penalty
     let blackModules = 0;
 
     // Calculates fourth penalty
     function calculateFourthPenalty() {
-      let blackPercentage = (blackModules / (matrix.length * matrix.length)) * 100;
+      let blackPercentage = Math.floor((blackModules / (matrix.length * matrix.length)) * 100);
 
       // Round to previous and next multiple of 5
       let prev = blackPercentage;
       let next = blackPercentage;
+
       while (prev % 5 != 0) prev--;
       while (next % 5 != 0) next++;
 
@@ -745,7 +829,7 @@ function calculateAndApplyMask(matrix, availabilityMatrix, level) {
       firstPenalty.streak = 0;
 
       for (let col = 0; col < matrix.length; col++) {
-        let value = matrix[row][col];
+        let value = testMatrix[row][col];
 
         // First penalty
         if (value === firstPenalty.lastVal) firstPenalty.streak++;
@@ -761,20 +845,9 @@ function calculateAndApplyMask(matrix, availabilityMatrix, level) {
         if (checkSquare(row, col)) totalPenalty += SECOND_PENALTY_VALUE;
 
         // Third penalty
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        if (col >= 10) {
+          if (checkLeftPattern(row, col)) totalPenalty += THIRD_PENALTY_VALUE;
+        }
         
         // Fourth penalty
         if (value === 1) blackModules++;
@@ -790,7 +863,7 @@ function calculateAndApplyMask(matrix, availabilityMatrix, level) {
       firstPenalty.streak = 0;
 
       for (let row = 0; row < matrix.length; row++) {
-        let value = matrix[row][col];
+        let value = testMatrix[row][col];
 
         // First penalty
         if (value === firstPenalty.lastVal) firstPenalty.streak++;
@@ -801,6 +874,11 @@ function calculateAndApplyMask(matrix, availabilityMatrix, level) {
 
         if (firstPenalty.streak === 5) totalPenalty += FIRST_PENALTY_5_VALUE;
         else if (firstPenalty.streak > 5) totalPenalty += FIRST_PENALTY_OVER_5_VALUE;
+
+        // Third penalty
+        if (row >= 10) {
+          if (checkAbovePattern(row, col)) totalPenalty += THIRD_PENALTY_VALUE;
+        }
       }
     }
 
@@ -833,14 +911,11 @@ function calculateAndApplyMask(matrix, availabilityMatrix, level) {
   // Apply masks and calculate best one
   for (let maskNumber = 0; maskNumber < 8; maskNumber++) {
     copyMatrix(matrix, testMatrix);
+    addFormatString(maskNumber);
     applyMask(MASK_FUNCTIONS[maskNumber]);
     let maskPenalty = calculatePenalty();
     if (bestScore.penalty > maskPenalty) changeMax(maskPenalty, maskNumber);
   }
 
-  copyMatrix(bestScore.matrix, matrix);
-
-  // Add the level and mask modules
-
-  
+  copyMatrix(bestScore.matrix, matrix);  
 }
