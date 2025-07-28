@@ -397,3 +397,14 @@ export const VERSION_INFO_STRINGS = {
   39 : "100111010101000001",
   40 : "101000110001101001"
 }
+
+export const MASK_FUNCTIONS = {
+  0 : (row, col) => (row + col) % 2 === 0,
+  1 : (row, col) => row % 2 === 0,
+  2 : (row, col) => col % 3 === 0,
+  3 : (row, col) => (row + col) % 3 === 0,
+  4 : (row, col) => (Math.floor(row / 2) + Math.floor(col / 3)) % 2 === 0,
+  5 : (row, col) => ((row * col) % 2) + ((row * col) % 3) === 0,
+  6 : (row, col) => (((row * col) % 2) + ((row * col) % 3)) % 2 === 0,
+  7 : (row, col) => (((row + col) % 2) + ((row * col) % 3)) % 2 === 0
+};

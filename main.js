@@ -4,6 +4,8 @@ const INVALID_LENGTH = -1;
 const INVALID_CHARACTER = -2;
 const RESERVED = '*';
 const EMPTY_MODULE = '-';
+const FREE_MODULE = -3;
+const OCCUPIED_MODULE = -4;
 
 /* ######################## IMPORTS ######################## */
 
@@ -15,7 +17,8 @@ import {
   VERSION_REMAINDER_BITS,
   ALIGNMENT_PATTERN_LOCATIONS,
   FORMAT_INFO_STRINGS,
-  VERSION_INFO_STRINGS
+  VERSION_INFO_STRINGS,
+  MASK_FUNCTIONS
 } from "./raw_data_encoding_constants.js";
 
 // Reed-Solomon error correction
@@ -30,7 +33,7 @@ import {
 main();
 
 function main() {
-  let input = "Ciao topo";
+  let input = "Ciao topo bellissimo";
   let inputLen = input.length;
   input = input.toUpperCase();
 
@@ -92,6 +95,12 @@ function validateInput(str, len) {
 
 function printInvalidCharacterError(char) {
   console.log(`Character ${char} is invalid, the QR code couldn't be generated.`);
+}
+
+function copyMatrix(m1, m2) {
+  for (let i = 0; i < m1.size; i++) {
+    for (let j = 0; j < m1.size; j++) m2[i][j] = m1[i][j];
+  }
 }
 
 /* ######################## LEVEL AND VERSION CALCULATOR FUNCTIONS ######################## */
@@ -412,39 +421,72 @@ function generateMatrix(bitstream, version) {
   let size = (version - 1) * 4 + 21;
 
   let matrix = Array.from({ length : size }, () => Array(size).fill(EMPTY_MODULE)); // Initializes a size x size matrix of undefined elements
+  let availabilityMatrix = Array.from({ length : size }, () => Array(size).fill(FREE_MODULE)); // Initializes the mask matrix
 
-  addFinderPatterns(matrix);
-  addSeparators(matrix);
-  addAlignmentPatterns(matrix, version);
-  addTimingPatterns(matrix);
-  matrix[size - 8][8] = 1; // Add dark module
-  addReservedModules(matrix, version);
+  addFinderPatterns(matrix, availabilityMatrix);
+  addSeparators(matrix, availabilityMatrix);
+  addAlignmentPatterns(matrix, availabilityMatrix, version);
+  addTimingPatterns(matrix, availabilityMatrix);
+
+  // Add dark module
+  matrix[size - 8][8] = 1; 
+  availabilityMatrix[size - 8][8] = OCCUPIED_MODULE; 
+
+  addReservedModules(matrix, availabilityMatrix, version);
   addDataModules(matrix, bitstream);
-
+  calculateAndApplyMask(matrix, availabilityMatrix);
+  
   return matrix;
 }
 
-function addFinderPatterns(matrix) {
+function addFinderPatterns(matrix, availabilityMatrix) {
   function makeFinderFromTopLeft(matrix, start) {
     let x = start.x;
     let y = start.y;
     
     // Adds borders
-    for (let i = x; i < x + 7; i++) matrix[y][i] = 1;
-    for (let i = x; i < x + 7; i++) matrix[y + 6][i] = 1;
-    for (let i = y + 1; i < y + 6; i++) matrix[i][x] = 1;
-    for (let i = y + 1; i < y + 6; i++) matrix[i][x + 6] = 1;
+    for (let i = x; i < x + 7; i++) {
+      matrix[y][i] = 1;
+      availabilityMatrix[y][i] = OCCUPIED_MODULE;
+    }
+    for (let i = x; i < x + 7; i++) {
+      matrix[y + 6][i] = 1;
+      availabilityMatrix[y + 6][i] = OCCUPIED_MODULE;
+    }
+    for (let i = y + 1; i < y + 6; i++) {
+      matrix[i][x] = 1;
+      availabilityMatrix[i][x] = OCCUPIED_MODULE;
+    }
+    for (let i = y + 1; i < y + 6; i++) {
+      matrix[i][x + 6] = 1;
+      availabilityMatrix[i][x + 6] = OCCUPIED_MODULE;
+    }
 
     // Adds central square
     for (let i = y + 2; i < y + 5; i++) {
-      for (let j = x + 2; j < x + 5; j++) matrix[i][j] = 1; 
+      for (let j = x + 2; j < x + 5; j++) {
+        matrix[i][j] = 1; 
+        availabilityMatrix[i][j] = OCCUPIED_MODULE;
+      }
     }
 
     // Adds white borders
-    for (let i = x + 1; i < x + 6; i++) matrix[y + 1][i] = 0;
-    for (let i = x + 1; i < x + 6; i++) matrix[y + 5][i] = 0;
-    for (let i = y + 2; i < y + 5; i++) matrix[i][x + 1] = 0
-    for (let i = y + 2; i < y + 5; i++) matrix[i][x + 5] = 0;
+    for (let i = x + 1; i < x + 6; i++) {
+      matrix[y + 1][i] = 0;
+      availabilityMatrix[y + 1][i] = OCCUPIED_MODULE;
+    }
+    for (let i = x + 1; i < x + 6; i++) {
+      matrix[y + 5][i] = 0;
+      availabilityMatrix[y + 5][i] = OCCUPIED_MODULE;
+    }
+    for (let i = y + 2; i < y + 5; i++) {
+      matrix[i][x + 1] = 0
+      availabilityMatrix[i][x + 1] = OCCUPIED_MODULE;
+    }
+    for (let i = y + 2; i < y + 5; i++) {
+      matrix[i][x + 5] = 0;
+      availabilityMatrix[i][x + 5] = OCCUPIED_MODULE;
+    }
   }
   
   let size = matrix.length;
@@ -454,23 +496,41 @@ function addFinderPatterns(matrix) {
   makeFinderFromTopLeft(matrix, {x : 0, y : size - 7}); // Bottom-Left
 }
 
-function addSeparators(matrix) {
+function addSeparators(matrix, availabilityMatrix) {
   let size = matrix.length;
   
   // Top-Left separators
-  for (let i = 0; i < 8; i++) matrix[7][i] = 0;
-  for (let i = 0; i < 7; i++) matrix[i][7] = 0;
+  for (let i = 0; i < 8; i++) {
+    matrix[7][i] = 0;
+    availabilityMatrix[7][i] = OCCUPIED_MODULE;
+  }
+  for (let i = 0; i < 7; i++) {
+    matrix[i][7] = 0;
+    availabilityMatrix[i][7] = OCCUPIED_MODULE;
+  }
 
   // Top-Right separators
-  for (let i = size - 8; i < size; i++) matrix[7][i] = 0;
-  for (let i = 0; i < 7; i++) matrix[i][size - 8] = 0;
+  for (let i = size - 8; i < size; i++) {
+    matrix[7][i] = 0;
+    availabilityMatrix[7][i] = OCCUPIED_MODULE;
+  }
+  for (let i = 0; i < 7; i++) {
+    matrix[i][size - 8] = 0;
+    availabilityMatrix[i][size - 8] = OCCUPIED_MODULE;
+  }
 
   // Bottom-Left separators
-  for (let i = 0; i < 8; i++) matrix[size - 8][i] = 0;
-  for (let i = size - 7; i < size; i++) matrix[i][7] = 0;
+  for (let i = 0; i < 8; i++) {
+    matrix[size - 8][i] = 0;
+    availabilityMatrix[size - 8][i] = OCCUPIED_MODULE;
+  }
+  for (let i = size - 7; i < size; i++) {
+    matrix[i][7] = 0;
+    availabilityMatrix[i][7] = OCCUPIED_MODULE;
+  }
 }
 
-function addAlignmentPatterns(matrix, version) {
+function addAlignmentPatterns(matrix, availabilityMatrix, version) {
   function makeAlignmentPatternByCenter(matrix, center) {
     let size = matrix.length;
 
@@ -484,19 +544,40 @@ function addAlignmentPatterns(matrix, version) {
     if (x + 4 >= size - 8 && y <= 7) return; // Top-Right interference
 
     // Add black borders
-    for (let i = x; i < x + 5; i++) matrix[y][i] = 1;
-    for (let i = x; i < x + 5; i++) matrix[y + 4][i] = 1;
-    for (let i = y + 1; i < y + 4; i++) matrix[i][x] = 1;
-    for (let i = y + 1; i < y + 4; i++) matrix[i][x + 4] = 1;
+    for (let i = x; i < x + 5; i++) {
+      matrix[y][i] = 1;
+      availabilityMatrix[y][i] = OCCUPIED_MODULE;
+    }
+    for (let i = x; i < x + 5; i++) {
+      matrix[y + 4][i] = 1;
+      availabilityMatrix[y + 4][i] = OCCUPIED_MODULE;
+    }
+    for (let i = y + 1; i < y + 4; i++) {
+      matrix[i][x] = 1;
+      availabilityMatrix[i][x] = OCCUPIED_MODULE;
+    }
+    for (let i = y + 1; i < y + 4; i++) {
+      matrix[i][x + 4] = 1;
+      availabilityMatrix[i][x + 4] = OCCUPIED_MODULE;
+    }
 
     // Add center
     matrix[y + 2][x + 2] = 1;
+    availabilityMatrix[y + 2][x + 2] = OCCUPIED_MODULE;
 
     // Add white borders
-    for (let i = x + 1; i < x + 4; i++) matrix[y + 1][i] = 0;
-    for (let i = x + 1; i < x + 4; i++) matrix[y + 3][i] = 0;
+    for (let i = x + 1; i < x + 4; i++) {
+      matrix[y + 1][i] = 0;
+      availabilityMatrix[y + 1][i] = OCCUPIED_MODULE;
+    }
+    for (let i = x + 1; i < x + 4; i++) {
+      matrix[y + 3][i] = 0;
+      availabilityMatrix[y + 3][i] = OCCUPIED_MODULE;
+    }
     matrix[y + 2][x + 1] = 0;
     matrix[y + 2][x + 3] = 0;
+    availabilityMatrix[y + 2][x + 1] = OCCUPIED_MODULE;
+    availabilityMatrix[y + 2][x + 3] = OCCUPIED_MODULE;
   }
 
   if (version === 1) return;
@@ -509,52 +590,72 @@ function addAlignmentPatterns(matrix, version) {
   }
 }
 
-function addTimingPatterns(matrix) {
+function addTimingPatterns(matrix, availabilityMatrix) {
   let size = matrix.length;
   
   // Add horizontal pattern
   for (let i = 8; i < size - 8; i++) {
     if (i % 2 === 0) matrix[6][i] = 1;
     else matrix[6][i] = 0;
+    availabilityMatrix[6][i] = OCCUPIED_MODULE;
   }
 
   // Add vertical pattern
   for (let i = 8; i < size - 8; i++) {
     if (i % 2 === 0) matrix[i][6] = 1;
     else matrix[i][6] = 0;
+    availabilityMatrix[i][6] = OCCUPIED_MODULE;
   }
 }
 
-function addReservedModules(matrix, version) {
+function addReservedModules(matrix, availabilityMatrix, version) {
   let size = matrix.length;
 
   // Top-Right strip
-  for (let i = size - 8; i < size; i++) matrix[8][i] = RESERVED;
+  for (let i = size - 8; i < size; i++) {
+    matrix[8][i] = RESERVED;
+    availabilityMatrix[8][i] = OCCUPIED_MODULE;
+  }
 
   // Top-Left strips
   for (let i = 0; i < 9; i++) {
     if (i === 6) continue;
     matrix[i][8] = RESERVED;
+    availabilityMatrix[i][8] = OCCUPIED_MODULE;
   }
 
   for (let i = 0; i < 8; i++) {
     if (i === 6) continue;
     matrix[8][i] = RESERVED;
+    availabilityMatrix[8][i] = OCCUPIED_MODULE;
   }
 
   // Bottom-Left strip
-  for (let i = size - 7; i < size; i++) matrix[i][8] = RESERVED;
+  for (let i = size - 7; i < size; i++) {
+    matrix[i][8] = RESERVED;
+    availabilityMatrix[i][8] = OCCUPIED_MODULE;
+  }
 
   if (version < 7) return; // Early exit
 
-  // Top-Right area
+  // Add version modules 
+  let bits = VERSION_INFO_STRINGS[version].split("").map(Number);
+  let k = bits.length - 1;
+
+  // Fill Top-Right area
   for (let i = 0; i < 6; i++) {
-    for (let j = size - 11; j < size - 8; j++) matrix[i][j] = RESERVED;
+    for (let j = size - 11; j < size - 8; j++) {
+      matrix[i][j] = bits[k--];
+      availabilityMatrix[i][j] = OCCUPIED_MODULE;
+    }
   }
 
-  // Bottom-Left area
-  for (let i = size - 11; i < size - 8; i++) {
-    for (let j = 0; j < 6; j++) matrix[i][j] = RESERVED;
+  // Fill Bottom-Left area
+  for (let i = 0; i < 6; i++) {
+    for (let j = size - 11; j < size - 8; j++) {
+      matrix[j][i] = bits.pop();
+      availabilityMatrix[j][i] = OCCUPIED_MODULE;
+    }
   }
 }
 
@@ -572,11 +673,7 @@ function addDataModules(matrix, bitstream) {
     if (dir === UPWARDS) {
       for (let row = size - 1; row >= 0; row--) {
         for (let col = rightCol; col >= rightCol - 1; col--) {
-          if (matrix[row][col] === EMPTY_MODULE) {
-            matrix[row][col] = bits.shift();
-            // printMatrix(matrix);
-            // console.log(bits.length);
-          }
+          if (matrix[row][col] === EMPTY_MODULE) matrix[row][col] = bits.shift();
           else continue;
         }
       }
@@ -586,11 +683,7 @@ function addDataModules(matrix, bitstream) {
     else {
       for (let row = 0; row < size; row++) {
         for (let col = rightCol; col >= rightCol - 1; col--) {
-          if (matrix[row][col] === EMPTY_MODULE) {
-            matrix[row][col] = bits.shift();
-            // printMatrix(matrix);
-            // console.log(bits.length);
-          }
+          if (matrix[row][col] === EMPTY_MODULE) matrix[row][col] = bits.shift();
           else continue;
         }
       }
@@ -598,6 +691,156 @@ function addDataModules(matrix, bitstream) {
       dir = UPWARDS;
     }
 
-    rightCol = rightCol == 8 ? 5 : rightCol - 2;
+    rightCol = rightCol == 8 ? 5 : rightCol - 2; // If the next rightcol is the vertical timing pattern shift 1 to the left
   }
+}
+
+function calculateAndApplyMask(matrix, availabilityMatrix, level) {
+  function calculatePenalty() {
+    const FIRST_PENALTY_5_VALUE = 3;
+    const FIRST_PENALTY_OVER_5_VALUE = 1;
+    const SECOND_PENALTY_VALUE = 3;
+    const THIRD_PENALTY_VALUE = 40;
+    
+    let totalPenalty = 0;
+    
+    // Tracks first penalty violations
+    let firstPenalty = {
+      lastVal : 0, // 0 or 1 doesn't make a difference as first value
+      streak : 0
+    };
+
+    // Calculates second penalty violations
+    function checkSquare(row, col) {
+      if (matrix[row][col] !== matrix[row][col + 1]) return false; // Top-Right module
+      if (matrix[row][col] !== matrix[row + 1][col]) return false; // Bottom-Left module
+      if (matrix[row][col] !== matrix[row + 1][col + 1]) return false; // Bottom-Right module
+      return true;
+    }
+    
+    // Used to calculate the fourth penalty
+    let blackModules = 0;
+
+    // Calculates fourth penalty
+    function calculateFourthPenalty() {
+      let blackPercentage = (blackModules / (matrix.length * matrix.length)) * 100;
+
+      // Round to previous and next multiple of 5
+      let prev = blackPercentage;
+      let next = blackPercentage;
+      while (prev % 5 != 0) prev--;
+      while (next % 5 != 0) next++;
+
+      // Subtract 50 and get abs value divided by 5
+      prev = Math.abs(prev - 50) / 5;
+      next = Math.abs(next - 50) / 5;
+
+      // Calculate the penalty
+      return Math.min(prev, next) * 10;
+    }
+
+    // Row penalty calculation (second and fourth are completely calculated here)
+    for (let row = 0; row < matrix.length; row++) {
+      // Reset first penalty
+      firstPenalty.streak = 0;
+
+      for (let col = 0; col < matrix.length; col++) {
+        let value = matrix[row][col];
+
+        // First penalty
+        if (value === firstPenalty.lastVal) firstPenalty.streak++;
+        else {
+          firstPenalty.lastVal = value;
+          firstPenalty.streak = 1;
+        }
+
+        if (firstPenalty.streak === 5) totalPenalty += FIRST_PENALTY_5_VALUE;
+        else if (firstPenalty.streak > 5) totalPenalty += FIRST_PENALTY_OVER_5_VALUE;
+
+        // Second penalty
+        if (checkSquare(row, col)) totalPenalty += SECOND_PENALTY_VALUE;
+
+        // Third penalty
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        // Fourth penalty
+        if (value === 1) blackModules++;
+      }
+    }
+
+    // Add fourth penalty
+    totalPenalty += calculateFourthPenalty();
+    
+    // Column penalty calculation (first and third are completed here)
+    for (let col = 0; col < matrix.length; col++) {
+      // Reset first penalty
+      firstPenalty.streak = 0;
+
+      for (let row = 0; row < matrix.length; row++) {
+        let value = matrix[row][col];
+
+        // First penalty
+        if (value === firstPenalty.lastVal) firstPenalty.streak++;
+        else {
+          firstPenalty.lastVal = value;
+          firstPenalty.streak = 1;
+        }
+
+        if (firstPenalty.streak === 5) totalPenalty += FIRST_PENALTY_5_VALUE;
+        else if (firstPenalty.streak > 5) totalPenalty += FIRST_PENALTY_OVER_5_VALUE;
+      }
+    }
+
+    return totalPenalty;
+  }
+  
+  function applyMask(condition) {
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix.length; j++) {
+        if (availabilityMatrix[i][j] === OCCUPIED_MODULE) continue; // Skip non-data modules
+        if (condition(i, j)) testMatrix[i][j] ^= 1; // XOR with 1 (reverses the bit)
+      }
+    }  
+  }
+
+  function changeMax(newPenalty, newMaskNum) {
+    bestScore.penalty = newPenalty;
+    bestScore.maskNumber = newMaskNum;
+    copyMatrix(testMatrix, bestScore.matrix);
+  }
+  
+  let testMatrix = Array.from({ length : size }, () => Array(size).fill(EMPTY_MODULE));  
+
+  let bestScore = {
+    maskNumber : undefined,
+    penalty : Infinity,
+    matrix : Array.from({ length : size }, () => Array(size).fill(EMPTY_MODULE))
+  }
+
+  // Apply masks and calculate best one
+  for (let maskNumber = 0; maskNumber < 8; maskNumber++) {
+    copyMatrix(matrix, testMatrix);
+    applyMask(MASK_FUNCTIONS[maskNumber]);
+    let maskPenalty = calculatePenalty();
+    if (bestScore.penalty > maskPenalty) changeMax(maskPenalty, maskNumber);
+  }
+
+  copyMatrix(bestScore.matrix, matrix);
+
+  // Add the level and mask modules
+
+  
 }
