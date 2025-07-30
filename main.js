@@ -37,7 +37,7 @@ main();
 
 function main() {
   // Get input
-  let input = `23429389`;
+  let input = `Ciao Anna, sei la mia topolina e ti amo!!!!`;
   let inputLen = input.length;
 
   // Get mode
@@ -268,6 +268,18 @@ function numericEncoder(str, len) {
     else if (chars.length === 2) result += val.toString(2).padStart(7, '0');
     else result += val.toString(2).padStart(4, '0');
   }
+
+  return result;
+}
+
+/*
+  Byte encoding:
+    Get each character and convert it to its ISO 8859-1, then into binary and pad it until 8 bits long
+*/
+function byteEncoder(str) {
+  let result = "";
+
+  for (let char of str) result += char.charCodeAt(0).toString(2).padStart(8, '0');
 
   return result;
 }
