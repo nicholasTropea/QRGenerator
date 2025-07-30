@@ -170,10 +170,10 @@ function modeEncoder(str, len, version, mode) {
   // Start with mode and character count bits
   let initializedString = initializeEncodedString(len, version, mode);
   
-  if (mode === "numeric") return numericEncoder(initializedString);
-  if (mode === "alphanumeric") return alphanumericEncoder(initializedString, len);
-  if (mode === "byte") return byteEncoder(initializedString);
-  if (mode === "kanji") return kanjiEncoder(initializedString);
+  if (mode === "numeric") return initializedString + numericEncoder(str);
+  if (mode === "alphanumeric") return initializedString + alphanumericEncoder(str, len);
+  if (mode === "byte") return initializedString + byteEncoder(str);
+  if (mode === "kanji") return initializedString + kanjiEncoder(str);
 
   return MODE_ENCODER_FAILURE; // Fallback, shouldn't reach here
 }
