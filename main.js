@@ -6,6 +6,7 @@ const RESERVED = '*';
 const EMPTY_MODULE = '-';
 const FREE_MODULE = -3;
 const OCCUPIED_MODULE = -4;
+const MODE_ENCODER_FAILURE = -5;
 
 /* ######################## IMPORTS ######################## */
 
@@ -57,7 +58,7 @@ function main() {
 
   // Calculate data codewords
   let rawDataBits = modeEncoder(input, inputLen, version, mode);
-  if (rawDataBits === INVALID_CHARACTER) return;
+  if (rawDataBits === MODE_ENCODER_FAILURE) return;
 
   rawDataBits = completeRawDataBits(rawDataBits, selectedEntry);
 
@@ -226,7 +227,7 @@ function calculateCharacterCountBits(len, version, mode) {
         firstChar.value then convert to 6 bits
 */
 function alphanumericEncoder(str, len) {
-  let result = str;
+  let result = "";
 
   for (let i = 0; i < len; i += 2) {
     let char1 = ALPHANUMERIC_TABLE[str[i]];
