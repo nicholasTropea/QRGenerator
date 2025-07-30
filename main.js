@@ -37,7 +37,7 @@ main();
 
 function main() {
   // Get input
-  let input = `Ciao nome cognome.`;
+  let input = `23429389`;
   let inputLen = input.length;
 
   // Get mode
@@ -188,7 +188,7 @@ function modeEncoder(str, len, version, mode) {
   // Start with mode and character count bits
   let initializedString = initializeEncodedString(len, version, mode);
   
-  if (mode === "numeric") return initializedString + numericEncoder(str);
+  if (mode === "numeric") return initializedString + numericEncoder(str, len);
   if (mode === "alphanumeric") return initializedString + alphanumericEncoder(str, len);
   if (mode === "byte") return initializedString + byteEncoder(str);
   if (mode === "kanji") return initializedString + kanjiEncoder(str);
@@ -257,9 +257,19 @@ function alphanumericEncoder(str, len) {
     (If len is not a multiple of 3, the last iteration will consider a couple or a single digit)
 */
 function numericEncoder(str, len) {
-  let result = str;
+  let result = "";
 
-  // ...TO-DO...
+  for (let i = 0; i < len; i += 3) {
+    const chars = str.slice(i, i + 3); // Grab up to 3 digits from string
+
+    let val = Number(chars); // Convert to integer, if there are leading zeroes they are removed
+    
+    if (chars.length === 3) result += val.toString(2).padStart(10, '0');
+    else if (chars.length === 2) result += val.toString(2).padStart(7, '0');
+    else result += val.toString(2).padStart(4, '0');
+  }
+
+  return result;
 }
 
 /* ######################## TERMINATOR AND PAD BYTES FUNCTIONS ######################## */
