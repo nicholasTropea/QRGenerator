@@ -82,12 +82,29 @@ function printMatrix(matrix) {
   const RESET = '\x1b[0m';
   let output = "";
 
+  // Print top white border
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < matrix.length + 8; j++) output += WHITE_BG + "  " + RESET;
+    output += "\n";
+  }
+
+  // Print actual matrix and side borders
   for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < 4; j++) output += WHITE_BG + "  " + RESET; // Left white border
+
     for (let j = 0; j < matrix.length; j++) {
       if (matrix[i][j] === 1) output += BLACK_BG + "  " + RESET; // White for QR black modules
       else output += WHITE_BG + "  " + RESET; // Black for QR white modules
     }
 
+    for (let j = 0; j < 4; j++) output += WHITE_BG + "  " + RESET; // Right white border
+
+    output += "\n";
+  }
+
+  // Print bottom white border
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < matrix.length + 8; j++) output += WHITE_BG + "  " + RESET;
     output += "\n";
   }
 
