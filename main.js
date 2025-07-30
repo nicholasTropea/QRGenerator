@@ -12,13 +12,15 @@ const OCCUPIED_MODULE = -4;
 // Raw data encoding
 import {
   MODE_INDICATORS,
+  TOTAL_CAPACITIES,
   ALPHANUMERIC_TABLE,
   LEVEL_VERSION_DATA,
   VERSION_REMAINDER_BITS,
   ALIGNMENT_PATTERN_LOCATIONS,
   FORMAT_INFO_STRINGS,
   VERSION_INFO_STRINGS,
-  MASK_FUNCTIONS
+  MASK_FUNCTIONS,
+  CHARACTER_COUNT_INDICATORS_SIZE
 } from "./raw_data_encoding_constants.js";
 
 // Reed-Solomon error correction
@@ -33,29 +35,41 @@ import {
 main();
 
 function main() {
-  let input = `1 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 101 2 3 4 5 6 7 8 9 10`;
+  // Get input
+  let input = `Ciao nome cognome.`;
   let inputLen = input.length;
-  input = input.toUpperCase();
 
-  let err = validateInput(input, inputLen);
+  // Get mode
+  let mode = calculateEncodingMode(input);
+  if (mode === INVALID_CHARACTER) return;
+  if (mode === "alphanumeric") input = input.toUpperCase();
+
+  // Validate input
+  let err = validateInput(inputLen, mode);
   if (err === INVALID_LENGTH) return;
 
-  let level = getLevel(inputLen);
-  let version = versionBinarySearch(level, inputLen, 20, 1, 40); // Find minimum level required
-  console.log("Version: " + version + "\nCorrection level: " + level + "\n");
+  // Get max level and min version
+  let level = getLevel(inputLen, mode);
+  let version = versionBinarySearch(mode, level, inputLen, 20, 1, 40); // Find minimum level required
+  console.log(`Version: ${version}\nCorrection level: ${level}\nEncoding mode: ${mode}\n`);
 
   let selectedEntry = LEVEL_VERSION_DATA[level][version]; // Get table entry relative to this level and version
 
-  let rawDataBits = modeEncoder(input, inputLen, version);
+  // Calculate data codewords
+  let rawDataBits = modeEncoder(input, inputLen, version, mode);
   if (rawDataBits === INVALID_CHARACTER) return;
 
   rawDataBits = completeRawDataBits(rawDataBits, selectedEntry);
 
   let messagePolynomials = generateMessagePolynomials(rawDataBits, selectedEntry);
+
+  // Calculate error correction codewords
   let errorBits = generateErrorCorrectionBits(messagePolynomials, selectedEntry);
 
+  // Compose the final bitstream
   let finalMessage = composeFinalMessage(rawDataBits, errorBits, selectedEntry, version);
 
+  // Generate qr code matrix
   let matrix = generateMatrix(finalMessage, version, level);
   printMatrix(matrix);
 }
@@ -82,11 +96,11 @@ function printMatrix(matrix) {
 
 /* ######################## UTILITIES ######################## */
 
-function validateInput(str, len) {
+function validateInput(len, mode) {
   if (len == 0) return INVALID_LENGTH;
 
-  // Input too long
-  if (len > LEVEL_VERSION_DATA.L[40].totalCapacity) { 
+  // Input longer than max input for selected mode
+  if (len > TOTAL_CAPACITIES['L'][40][mode]) { 
     console.log("The input is too long, I can't generate a QR code!");
     return INVALID_LENGTH;
   }
@@ -96,6 +110,7 @@ function validateInput(str, len) {
 
 function printInvalidCharacterError(char) {
   console.log(`Character ${char} is invalid, the QR code couldn't be generated.`);
+  console.log("For a list of all the valid characters, check the ISO-8859-1 character set!");
 }
 
 function copyMatrix(m1, m2) {
@@ -104,18 +119,34 @@ function copyMatrix(m1, m2) {
   }
 }
 
-/* ######################## LEVEL AND VERSION CALCULATOR FUNCTIONS ######################## */
+/* ######################## MODE, LEVEL AND VERSION CALCULATOR FUNCTIONS ######################## */
+function calculateEncodingMode(str) {
+  if (/^\d+$/.test(str)) return "numeric";
+  if (/^[0-9A-Z $%*+\-.\/:]*$/.test(str)) return "alphanumeric";
+  if (/^[\x00-\xFF]*$/.test(str)) return "byte";
+  
+  // If not passed, loop again to find invalid character
+  for (let char of str) {
+    if (char.charCodeAt(0) > 255) { // Finds the invalid character (not in ISO-8859-1)
+      printInvalidCharacterError(char);
+      return INVALID_CHARACTER;
+    }
+  }
 
-function getLevel(len) {
-  if (len <= LEVEL_VERSION_DATA.H[40].totalCapacity) return 'H';
-  if (len <= LEVEL_VERSION_DATA.Q[40].totalCapacity) return 'Q';
-  if (len <= LEVEL_VERSION_DATA.M[40].totalCapacity) return 'M';
+  return INVALID_CHARACTER; // Fallback, function shouldn't reach this
+}
+
+function getLevel(len, mode) {
+  // Version 40 has the highest capacity for each level
+  if (len <= TOTAL_CAPACITIES['H'][40][mode]) return 'H';
+  if (len <= TOTAL_CAPACITIES['Q'][40][mode]) return 'Q';
+  if (len <= TOTAL_CAPACITIES['M'][40][mode]) return 'M';
   return 'L'; 
 }
 
-function versionBinarySearch(level, len, currentVersion, low, high) {
-  let currentMax = LEVEL_VERSION_DATA[level][currentVersion].totalCapacity;
-  let previousMax = currentVersion == 1 ? 0 : LEVEL_VERSION_DATA[level][currentVersion - 1].totalCapacity;
+function versionBinarySearch(mode, level, len, currentVersion, low, high) {
+  let currentMax = TOTAL_CAPACITIES[level][currentVersion][mode];
+  let previousMax = currentVersion == 1 ? 0 : TOTAL_CAPACITIES[level][currentVersion - 1][mode];
 
   // Found
   if (currentMax >= len && previousMax < len) return currentVersion;
@@ -130,42 +161,66 @@ function versionBinarySearch(level, len, currentVersion, low, high) {
   // Calculate next middle
   let mid = Math.floor((low + high) / 2); 
 
-  return versionBinarySearch(level, len, mid, low, high);
+  return versionBinarySearch(mode, level, len, mid, low, high);
 }
 
 /* ######################## MODE ENCODING FUNCTIONS ######################## */
 
+function modeEncoder(str, len, version, mode) {
+  // Start with mode and character count bits
+  let initializedString = initializeEncodedString(len, version, mode);
+  
+  if (mode === "numeric") return numericEncoder(initializedString);
+  if (mode === "alphanumeric") return alphanumericEncoder(initializedString, len);
+  if (mode === "byte") return byteEncoder(initializedString);
+  if (mode === "kanji") return kanjiEncoder(initializedString);
+
+  return MODE_ENCODER_FAILURE; // Fallback, shouldn't reach here
+}
+
+function valueToBitString(val, bits) {
+  let bitString = val.toString(2); // Converts value to binary string
+  return bitString.padStart(bits, '0'); // Adds leading zeroes if needed
+}
+
+function initializeEncodedString(len, version, mode) {
+  // Add mode bits
+  let result = MODE_INDICATORS[mode];
+
+  // Add character count bits
+  return result + calculateCharacterCountBits(len, version, mode);
+}
+
+function calculateCharacterCountBits(len, version, mode) {
+  let bits;
+
+  if (version <= 9) bits = CHARACTER_COUNT_INDICATORS_SIZE['1to9'][mode];
+  else if (version <= 26) bits = CHARACTER_COUNT_INDICATORS_SIZE['10to26'][mode];
+  else bits = CHARACTER_COUNT_INDICATORS_SIZE['27to40'][mode];
+
+  return len.toString(2).padStart(bits, '0');
+}
+
 /*
-  How to encode:
+  Alphanumeric encoding:
     - Pair:
         firstChar.value * 45 + secondChar.value then convert to 11 bits
     - Single:
         firstChar.value then convert to 6 bits
 */
-function modeEncoder(str, len, version) {
-  // Start with mode and char count bits
-  let result = initializeEncodedString(len, version);
-  
+function alphanumericEncoder(str, len) {
+  let result = str;
+
   for (let i = 0; i < len; i += 2) {
     let char1 = ALPHANUMERIC_TABLE[str[i]];
-    if (char1 === undefined) {
-      printInvalidCharacterError(str[i]);
-      return INVALID_CHARACTER;
-    }
 
     // Single last value of odd string
-    if (i === len - 1) {
-      result += valueToBitString(char1, 6);
-    }
+    if (i === len - 1) result += valueToBitString(char1, 6);
     // Pair value calculation
     else {
       char1 *= 45;
 
       let char2 = ALPHANUMERIC_TABLE[str[i + 1]];
-      if (char2 === undefined) {
-        printInvalidCharacterError(str[i + 1]);
-        return INVALID_CHARACTER;
-      }
 
       result += valueToBitString(char1 + char2, 11);
     }
@@ -174,26 +229,19 @@ function modeEncoder(str, len, version) {
   return result;
 }
 
-function valueToBitString(val, bits) {
-  let bitString = val.toString(2); // Converts value to binary string
-  return bitString.padStart(bits, '0'); // Adds leading zeroes if needed
-}
+/*
+  Numeric encoding:
+    - Three digits number: convert to 10 binary bits
+    - Two digits number: convert to 7 binary bits
+    - One digit number : convert to 4 binary bits
 
-function initializeEncodedString(len, version) {
-  // Add mode bits
-  let result = MODE_INDICATORS.alphanumeric;
+    (If a triple starts with 0s, get rid of them)
+    (If len is not a multiple of 3, the last iteration will consider a couple or a single digit)
+*/
+function numericEncoder(str, len) {
+  let result = str;
 
-  // Add character count bits
-  return result + calculateCharacterCountBits(len, version);
-}
-
-function calculateCharacterCountBits(len, version) {
-  let bits = 13;
-
-  if (version <= 9) bits = 9;
-  else if (version <= 26) bits = 11;
-
-  return len.toString(2).padStart(bits, '0');
+  // ...TO-DO...
 }
 
 /* ######################## TERMINATOR AND PAD BYTES FUNCTIONS ######################## */
