@@ -1,13 +1,16 @@
 {
-  "name" : "qr_generator",
-  "version" : "1.0.0",
-  "type" : "module",
-  "main" : "main.js",
-  "scripts" : {
-    "test" : "echo \"Error: no test specified\" && exit 1"
+  "name": "qr_generator",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords" : [],
-  "author" : "Nicholas Riccardo Tropea",
-  "license" : "ISC",
-  "description" : ""
+  "keywords": [],
+  "author": "Nicholas Riccardo Tropea",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
+  }
 }

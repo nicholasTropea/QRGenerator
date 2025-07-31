@@ -7,8 +7,12 @@ const EMPTY_MODULE = '-';
 const FREE_MODULE = -3;
 const OCCUPIED_MODULE = -4;
 const MODE_ENCODER_FAILURE = -5;
+const KANJI_HEX_FAILURE = -6;
 
 /* ######################## IMPORTS ######################## */
+
+// Shift-JIS table translation
+import iconv from 'iconv-lite';
 
 // Raw data encoding
 import {
@@ -37,7 +41,7 @@ main();
 
 function main() {
   // Get input
-  let input = `Ciao Anna, sei la mia topolina e ti amo!!!!`;
+  let input = `喝拡灰絵`;
   let inputLen = input.length;
 
   // Get mode
@@ -141,17 +145,27 @@ function copyMatrix(m1, m2) {
 function calculateEncodingMode(str) {
   if (/^\d+$/.test(str)) return "numeric";
   if (/^[0-9A-Z $%*+\-.\/:]*$/.test(str)) return "alphanumeric";
+  if (isStringShiftJIS(str)) return "kanji";
   if (/^[\x00-\xFF]*$/.test(str)) return "byte";
   
   // If not passed, loop again to find invalid character
   for (let char of str) {
-    if (char.charCodeAt(0) > 255) { // Finds the invalid character (not in ISO-8859-1)
+    if (char.charCodeAt(0) > 255 && !isStringShiftJIS(char)) { // Finds the invalid character (not in ISO-8859-1 or Shift-JIS)
       printInvalidCharacterError(char);
       return INVALID_CHARACTER;
     }
   }
 
   return INVALID_CHARACTER; // Fallback, function shouldn't reach this
+}
+
+/*
+  Checks wether the passed string is made out of Shift-JIS (Shift Japanese Industrial Standard) characters.
+*/
+function isStringShiftJIS(str) {
+  const encoded = iconv.encode(str, 'shift_jis');
+  const decoded = iconv.decode(encoded, 'shift_jis');
+  return decoded === str;
 }
 
 function getLevel(len, mode) {
@@ -191,7 +205,10 @@ function modeEncoder(str, len, version, mode) {
   if (mode === "numeric") return initializedString + numericEncoder(str, len);
   if (mode === "alphanumeric") return initializedString + alphanumericEncoder(str, len);
   if (mode === "byte") return initializedString + byteEncoder(str);
-  if (mode === "kanji") return initializedString + kanjiEncoder(str);
+  if (mode === "kanji") {
+    let res = kanjiEncoder(str);
+    return res === KANJI_HEX_FAILURE ? KANJI_HEX_FAILURE : initializedString + res; 
+  }
 
   return MODE_ENCODER_FAILURE; // Fallback, shouldn't reach here
 }
@@ -280,6 +297,50 @@ function byteEncoder(str) {
   let result = "";
 
   for (let char of str) result += char.charCodeAt(0).toString(2).padStart(8, '0');
+
+  return result;
+}
+
+/*
+  Kanji encoding:
+    1) Convert the character to bytes. (Example: 茗 -> 0xE4AA or 荷 -> 0x89D7) 
+    2) Divide based on:
+      - 0x8140 <= val <= 0x9FFC (Example: 荷 -> 0x89D7)
+        1) Subtract 0x8140 from val. (Example: 0x89D7 - 0x8140 = 0x0897)
+        2) Multiply most significant byte of result by 0xC0 (Example: 0x08 * 0xC0 = 0x600)
+        3) Sum the least significant byte to the result (Example: 0x600 + 0x97 = 0x697)
+        4) Convert result to 13 bit binary (Example: 0x697 = 0 0110 1001 0111)
+
+      - 0xE040 <= val <= 0xEBBF (Example: 茗 -> 0xE4AA)
+        1) Subtract 0xC140 from val. (Example: 0xE4AA - 0xC140 = 0x236A)
+        2) Multiply most significant byte of result by 0xC0 (Example: 0x23 * 0xC0 = 0x1A40)
+        3) Sum the least significant byte to the result (Example: 0x1A40 + 0x6A = 0x1AAA)
+        4) Convert result to 13 bit binary (Example: 0x1AAA) = 1 1010 1010 1010
+*/
+function kanjiEncoder(str) {
+  function kanjiToHexValue(char) {
+    const buf = iconv.encode(char, 'shift_jis');
+    if (buf.length !== 2) return KANJI_HEX_FAILURE; // Fallback, shouldn't reach here
+
+    return (buf[0] << 8) | buf[1];
+  }
+  
+  let result = "";
+
+  for (let char of str) {
+    let hexValue = kanjiToHexValue(char);
+
+    if (0x8140 <= hexValue && hexValue <= 0x9FFC) hexValue -= 0x8140;
+    else if (0xE040 <= hexValue && hexValue <= 0xEBBF) hexValue -= 0xC140;
+    else return KANJI_HEX_FAILURE; // Fallback, shouldn't reach here
+
+    let mostSignificantByte = (hexValue >> 8) & 0xFF;
+    let leastSignificantByte = hexValue & 0xFF;
+
+    let res = (mostSignificantByte * 0xC0) + leastSignificantByte;
+
+    result += res.toString(2).padStart(13, '0');
+  }
 
   return result;
 }
