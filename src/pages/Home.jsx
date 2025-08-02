@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import Button from '../components/Button.jsx';
 import InputField from '../components/InputField.jsx';
 import styles from '../styles/Home.module.scss';
 
 export default function Home() {
+  const [value, setValue] = useState('');
+  
   return (
     <div className={styles.main}>
       <h1 className={styles.title}>Welcome to the QR Code Generator!</h1>
@@ -12,9 +15,14 @@ export default function Home() {
         To see an in-depth list of what you can and cannot generate as a QR code, check the <a>what can I encode?</a> page! 
       </p>
       
-      <InputField classes={styles.inputField} placeHolder={"Place your input here!"} />
+      <InputField 
+        classes={styles.inputField} 
+        placeHolder={"Place your input here!"} 
+        value={value}
+        setValue={setValue}
+      />
 
-      <Button func={() => console.log("Pressed")}>
+      <Button func={() => console.log({value})}>
         Generate QR code!
       </Button>
     </div>

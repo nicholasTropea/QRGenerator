@@ -1,3 +1,12 @@
-export default function Button({ func, children }) {
-    return <button onClick={func}>{children}</button>
+import styles from '../styles/Button.module.scss';
+
+export default function Button({ classes = '', func, children }) {
+    return (
+        <button 
+            className={`${styles.buttonField} ${classes}`} 
+            onClick={func}
+        >
+            {children}
+        </button>
+    );
 }
