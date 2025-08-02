@@ -1,0 +1,23 @@
+.inputField {   
+    text-align: center;
+    font-size: 1.2em;
+    
+    border: none;
+    border-radius: 1.5em;
+    
+    width: 40vw;   
+    height: 10vh;
+    min-width: 300px;
+    min-height: 50px;
+
+    transition: border 100ms ease;
+
+    &:focus {
+        outline: none;
+        border: 2px solid rgb(238, 0, 255);
+    }
+
+    &:hover {
+        border: 2px solid rgb(238, 0, 255);
+    }
+}
