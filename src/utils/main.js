@@ -39,9 +39,7 @@ import {
 // Execute program
 main();
 
-function main() {
-  // Get input
-  let input = `喝拡灰絵`;
+export default function main(input) {
   let inputLen = input.length;
 
   // Get mode
