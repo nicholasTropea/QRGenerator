@@ -1,0 +1,26 @@
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    padding-top: 5vh;
+}
+
+.title {
+    font-size: 3em;
+
+    margin-bottom: 3vh;
+}
+
+.infoText {
+    text-align: center;
+    font-size: 1.2em;
+    
+    max-width: 750px;
+    margin-bottom: 10vh;
+}
+
+.inputField {
+    margin-bottom: 6vh;
+}
