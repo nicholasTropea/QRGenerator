@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "qr_generator",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "iconv-lite": "^0.6.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.1"
