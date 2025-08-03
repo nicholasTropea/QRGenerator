@@ -39,7 +39,7 @@ import { shiftJISMap } from './kanji_mode_characters_table.js';
 // Execute program
 main();
 
-export default function main(input) {
+export default function main(input = '') {
   let inputLen = input.length;
 
   // Get mode
@@ -76,9 +76,42 @@ export default function main(input) {
   // Generate qr code matrix
   let matrix = generateMatrix(finalMessage, version, level);
   printMatrix(matrix);
+  // printMatrixNumbers(matrix);
 }
 
 /* ######################## DEBUG ######################## */
+
+function printMatrixNumbers(matrix) {
+  let output = "";
+
+  // Print top white border
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < matrix.length + 8; j++) output += '0';
+    output += "\n";
+  }
+
+  // Print actual matrix and side borders
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < 4; j++) output += '0'; // Left white border
+
+    for (let j = 0; j < matrix.length; j++) {
+      if (matrix[i][j] === 1) output += '1'; // White for QR black modules
+      else output += '0'; // Black for QR white modules
+    }
+
+    for (let j = 0; j < 4; j++) output += '0'; // Right white border
+
+    output += "\n";
+  }
+
+  // Print bottom white border
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < matrix.length + 8; j++) output += '0';
+    output += "\n";
+  }
+
+  console.log(output);
+}
 
 function printMatrix(matrix) {
   const WHITE_BG = '\x1b[47m';  // White background for black modules
