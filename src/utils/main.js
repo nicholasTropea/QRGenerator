@@ -11,9 +11,6 @@ const KANJI_HEX_FAILURE = -6;
 
 /* ######################## IMPORTS ######################## */
 
-// Shift-JIS table translation
-import iconv from 'iconv-lite';
-
 // Raw data encoding
 import {
   MODE_INDICATORS,
@@ -34,6 +31,9 @@ import {
   GEN_POLYNOMIALS
 } from "./reed_solomon_constants.js";
 
+// Kanji mode encoding
+import { shiftJISMap } from './kanji_mode_characters_table.js';
+
 /* ######################## MAIN ######################## */
 
 // Execute program
@@ -46,6 +46,7 @@ export default function main(input) {
   let mode = calculateEncodingMode(input);
   if (mode === INVALID_CHARACTER) return;
   if (mode === "alphanumeric") input = input.toUpperCase();
+  if (mode === "kanji") input = input.replace(/ /g, '　'); // Changes any 'normal' space into 'japanese' space
 
   // Validate input
   let err = validateInput(inputLen, mode);
@@ -140,15 +141,19 @@ function copyMatrix(m1, m2) {
 }
 
 /* ######################## MODE, LEVEL AND VERSION CALCULATOR FUNCTIONS ######################## */
+
+/*
+  Note that byte mode is probably a fallback mode, meaning that it can encode basically any character
+*/
 function calculateEncodingMode(str) {
   if (/^\d+$/.test(str)) return "numeric";
   if (/^[0-9A-Z $%*+\-.\/:]*$/.test(str)) return "alphanumeric";
-  if (isStringShiftJIS(str)) return "kanji";
+  if (checkKanjiString(str)) return "kanji";
   if (/^[\x00-\xFF]*$/.test(str)) return "byte";
   
   // If not passed, loop again to find invalid character
   for (let char of str) {
-    if (char.charCodeAt(0) > 255 && !isStringShiftJIS(char)) { // Finds the invalid character (not in ISO-8859-1 or Shift-JIS)
+    if (char.charCodeAt(0) > 255 && !checkKanjiString(char)) { // Finds the invalid character (not in ISO-8859-1 or Shift-JIS)
       printInvalidCharacterError(char);
       return INVALID_CHARACTER;
     }
@@ -158,12 +163,11 @@ function calculateEncodingMode(str) {
 }
 
 /*
-  Checks wether the passed string is made out of Shift-JIS (Shift Japanese Industrial Standard) characters.
+  Checks wether the passed string is made out of Shift-JIS (Shift Japanese Industrial Standard) 2 byte characters.
 */
-function isStringShiftJIS(str) {
-  const encoded = iconv.encode(str, 'shift_jis');
-  const decoded = iconv.decode(encoded, 'shift_jis');
-  return decoded === str;
+function checkKanjiString(str) {
+  for (let char of str) if (!shiftJISMap[char] && char !== ' ') return false;
+  return true;
 }
 
 function getLevel(len, mode) {
@@ -316,17 +320,10 @@ function byteEncoder(str) {
         4) Convert result to 13 bit binary (Example: 0x1AAA) = 1 1010 1010 1010
 */
 function kanjiEncoder(str) {
-  function kanjiToHexValue(char) {
-    const buf = iconv.encode(char, 'shift_jis');
-    if (buf.length !== 2) return KANJI_HEX_FAILURE; // Fallback, shouldn't reach here
-
-    return (buf[0] << 8) | buf[1];
-  }
-  
   let result = "";
 
   for (let char of str) {
-    let hexValue = kanjiToHexValue(char);
+    let hexValue = shiftJISMap[char];
 
     if (0x8140 <= hexValue && hexValue <= 0x9FFC) hexValue -= 0x8140;
     else if (0xE040 <= hexValue && hexValue <= 0xEBBF) hexValue -= 0xC140;
