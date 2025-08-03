@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '../components/Button.jsx';
 import InputField from '../components/InputField.jsx';
 import styles from '../styles/Home.module.scss';
+import main from '../utils/main.js';
 
 export default function Home() {
   const [value, setValue] = useState('');
@@ -22,7 +23,7 @@ export default function Home() {
         setValue={setValue}
       />
 
-      <Button func={() => console.log({value})}>
+      <Button value={value} func={main}>
         Generate QR code!
       </Button>
     </div>
