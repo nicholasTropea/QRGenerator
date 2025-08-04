@@ -37,7 +37,6 @@ import { shiftJISMap } from './kanji_mode_characters_table.js';
 /* ######################## MAIN ######################## */
 
 export default function main(input = '') {
-  console.log("Function called")
   let inputLen = input.length;
 
   // Get mode
