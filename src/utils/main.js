@@ -73,8 +73,8 @@ export default function main(input = '') {
 
   // Generate qr code matrix
   let matrix = generateMatrix(finalMessage, version, level);
-  printMatrix(matrix);
-  // printMatrixNumbers(matrix);
+
+  return matrix;
 }
 
 /* ######################## DEBUG ######################## */
