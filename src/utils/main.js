@@ -55,8 +55,8 @@ export default function main(input = '') {
 
   console.log(
     `
-      QR CODE ENCODING INFORMATIONS:
-      
+      QR CODE ENCODING INFORMATION:
+
       Final input: ${input} 
       Version: ${version}
       Correction level: ${level}
