@@ -2,8 +2,9 @@ import { useRef, useEffect } from 'react';
 
 export default function Canvas({ matrix }) {
     const canvasRef = useRef(null); 
-    
     const moduleSize = 10; // Pixels
+
+    if (!matrix || matrix.length === 0) return null;
     
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -21,7 +22,7 @@ export default function Canvas({ matrix }) {
                 ctx.fillRect(moduleSize * col, moduleSize * row, moduleSize, moduleSize);
             }
         }
-    }, []);
+    }, [matrix]);
 
     return (
         <canvas
