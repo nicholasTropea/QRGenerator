@@ -52,7 +52,17 @@ export default function main(input = '') {
   // Get max level and min version
   let level = getLevel(inputLen, mode);
   let version = versionBinarySearch(mode, level, inputLen, 20, 1, 40); // Find minimum level required
-  console.log(`Version: ${version}\nCorrection level: ${level}\nEncoding mode: ${mode}\n`);
+
+  console.log(
+    `
+      QR CODE ENCODING INFORMATIONS:
+      
+      Final input: ${input} 
+      Version: ${version}
+      Correction level: ${level}
+      Encoding mode: ${mode}
+    `
+  );
 
   let selectedEntry = LEVEL_VERSION_DATA[level][version]; // Get table entry relative to this level and version
 
