@@ -117,6 +117,7 @@ export default function Home() {
           <Button 
             value={null} 
             func={handleResetButton}
+            classes={styles.newQRButton}
           >
             Create a new QR code!  
           </Button>

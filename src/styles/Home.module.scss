@@ -125,3 +125,15 @@
         }
     }
 }
+
+.newQRButton {
+    transition: 
+        border 300ms ease-in-out,
+        transform 200ms ease-in-out;
+    
+    &:hover {
+        cursor: pointer;
+        border: 1px solid white;
+        transform: scale(0.9);
+    }
+}
