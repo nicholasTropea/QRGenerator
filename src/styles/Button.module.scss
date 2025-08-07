@@ -1,37 +1,22 @@
 .buttonField {
     position: relative;
-    
+    background-color: rgba(0, 0, 0, 0.3);
     text-align: center;
     font-size: 1.2em;
-    
     border: none;
     border-radius: 1.5em;
-    
-    width: 15vw;   
+    width: 15vw;  
     height: 8vh;
     min-width: 300px;
     min-height: 50px;
-
-    transition: border 100ms ease;
-
-    &:focus {
-        outline: none;
-        border: 2px solid rgb(238, 0, 255);
-    }
-
-    &:hover {
-        border: 2px solid rgb(238, 0, 255);
-    }
-}
-
-.glowing {
-    // outline: 2px solid lime;
-
+    transition: border 100ms ease, transform 200ms ease-in-out;
+    z-index: 10;
+    
+    // Always create the glow elements
     &::before {
         content: "";
-
-        border: 1px solid red;
-
+        opacity: 0;
+        transition: opacity 700ms ease-in-out;
         background: linear-gradient(
             45deg,
             #ff0000,
@@ -44,45 +29,53 @@
             #ff00c8,
             #ff0000
         );
-
         position: absolute;
         top: -2px;
         left: -2px;
-
         background-size: 400%;
         z-index: -1;
-        
         filter: blur(5px);
         -webkit-filter: blur(5px);
-
         width: calc(100% + 4px);
         height: calc(100% + 4px);
         border-radius: 1.5em;
-
         animation: glowingButton 20s linear infinite;
-        transition: opacity 0.3s ease-in-out;
     }
-    
+   
     &::after {
         content: "";
-
+        opacity: 0;
+        transition: opacity 700ms ease-in-out;
         z-index: -1;
         position: absolute;
         top: 0;
         left: 0;
-
         width: 100%;
         height: 100%;
-
-        background: #222;
+        background-color: rgba(0, 0, 0, 0.8);
         border-radius: 1.5em;
     }
-
-    @at-root {
-        @keyframes glowingButton {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
+    
+    &:focus {
+        outline: none;
+    }
+    
+    // When button has the glowing class, show the effects
+    &.glowing {        
+        &::before,
+        &::after {
+            opacity: 1;
         }
+        
+        &:hover {
+            cursor: pointer;
+            transform: scale(0.9);
+        }
+    }
+    
+    @keyframes glowingButton {
+        0% { background-position: 0 0; }
+        50% { background-position: 400% 0; }
+        100% { background-position: 0 0; }
     }
 }
