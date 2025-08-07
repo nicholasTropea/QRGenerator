@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import styles from '../styles/Canvas.module.scss';
 
 export default function Canvas({ matrix }) {
     const canvasRef = useRef(null); 
@@ -25,11 +26,14 @@ export default function Canvas({ matrix }) {
     }, [matrix]);
 
     return (
-        <canvas
-            ref={canvasRef}
-            width={matrix.length * moduleSize} 
-            height={matrix.length * moduleSize}
-        >
-        </canvas>
+        <div className={styles.container}>
+            <canvas
+                id={styles.canvasObj}
+                ref={canvasRef}
+                width={matrix.length * moduleSize} 
+                height={matrix.length * moduleSize}
+            >
+            </canvas>
+        </div>
     );
 }
