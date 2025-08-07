@@ -1,12 +1,110 @@
-# React + Vite
+# QR Code Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A from-scratch QR code generator built without external libraries. Features a clean web interface and demonstrates complete QR code encoding implementation including error correction.
 
-Currently, two official plugins are available:
+🔗 **[Live Demo](nicholasTropea.github.io/QRGenerator/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![GitHub Pages](https://img.shields.io/github/deployments/username/repo/github-pages)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
+![No Dependencies](https://img.shields.io/badge/Dependencies-None-green)
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Zero Dependencies** - Pure JavaScript implementation
+- **Complete QR Spec** - Supports all QR code versions and error correction levels
+- **Responsive Design** - Works on desktop and mobile
+- **Real-time Generation** - Instant QR code creation as you type
+- **Educational** - Well-documented code for learning purposes
+
+## 🚀 Demo
+
+![QR Generator Demo](screenshots/demo.gif)
+
+Try it live: [QR Generator](nicholasTropea.github.io/QRGenerator/)
+
+### Example Usage
+- Enter text: `"Hello World"`
+- Press the "Generate QR Code!" button.
+- Download or copy the generated QR code
+
+## 🔧 Technical Details
+
+### QR Code Implementation
+- **Encoding**: Supports Numeric, Alphanumeric, Byte, and Kanji modes
+- **Error Correction**: Reed-Solomon error correction (L, M, Q, H levels)
+- **Versions**: QR versions 1-40 (21x21 to 177x177 modules)
+- **Masking**: All 8 mask patterns implemented
+
+### Frontend
+- **Framework**: Vite + React
+- **Styling**: SCSS with responsive design
+- **Canvas**: HTML5 Canvas for QR code rendering
+
+## 📦 Installation
+
+### Run Locally
+```bash
+git clone https://github.com/username/qr-generator
+cd qr-generator
+# Open index.html in your browser
+# Or serve with a local server:
+python -m http.server 8000
+```
+
+## 📁 Project Structure
+
+```
+qr-generator/
+├── README.md 
+├── index.html                                  # Main HTML file
+└── src/
+    ├── main.jsx                                # Main JSX file
+    ├── App.jsx             
+    ├── App.css             
+    ├── index.scss          
+    ├── utils/                                  # JS files of QR Generator implementation
+    │   ├── main.js                             # Main JS file
+    │   ├── kanji_mode_characters_table.js
+    │   ├── raw_data_encoding_constants.js
+    │   └── reed_solomon_constants.js
+    ├── pages/                                  # JSX files of pages Home and About
+    ├── components/                             # JSX files of components
+    ├── styles/                                 # SCSS files for pages and components
+    └── assets/                                 # Images
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! This project is educational and perfect for:
+
+- Learning QR code algorithms
+- Improving the UI/UX
+- Adding new features
+- Optimizing performance
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+### Code Style
+- Use ES6+ features
+- Comment complex algorithms
+- Keep functions pure when possible
+- Follow existing naming conventions
+
+## 📄 License
+
+MIT License - see [LICENSE.md](LICENSE.md) for details
+
+## 🙏 Acknowledgments
+
+- QR Code specification by Denso Wave
+- Reed-Solomon error correction algorithm
+- Inspiration from the need to understand QR codes from first principles
+
+---
+
+**Built with ❤️ and curiosity about how QR codes actually work**
