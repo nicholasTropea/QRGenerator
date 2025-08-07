@@ -75,30 +75,36 @@ export default function Home() {
 
   return (
     <div className={styles.main}>
-      <h1 className={styles.title}>Generate a QR code for {titleVal} <span id={styles.textBar}>|</span> </h1>
+      <div className={styles.overlay}>
+        <h1 className={styles.title}>
+          Generate a QR code for
+          <span id={styles.titlePhrase}> {titleVal} </span>
+          <span id={styles.textBar}> | </span>
+        </h1>
 
-      <p className={styles.infoText}>
-        This tool can generate a QR code for anything you want: text, numbers, website URLs, even kanji characters!
-        To see an in-depth list of what you can and cannot generate as a QR code, check the <a>what can I encode?</a> page! 
-      </p>
-      
-      {/* Conditional components, they render based on the presence/absence of the QR */}
-      { matrix === null && <InputField 
-        classes={styles.inputField} 
-        placeHolder={"Place your input here!"} 
-        value={value}
-        setValue={setValue}
-      /> }
+        <p className={styles.infoText}>
+          This tool can generate a QR code for anything you want: text, numbers, website URLs, even kanji characters!
+          To see an in-depth list of what you can and cannot generate as a QR code, check the <a>what can I encode?</a> page! 
+        </p>
+        
+        {/* Conditional components, they render based on the presence/absence of the QR */}
+        { matrix === null && <InputField 
+          classes={styles.inputField} 
+          placeHolder={"Place your input here!"} 
+          value={value}
+          setValue={setValue}
+        /> }
 
-      { matrix === null && <Button value={value} func={handleMatrixGeneration}>
-        Generate QR code!
-      </Button> }
+        { matrix === null && <Button value={value} func={handleMatrixGeneration} glowing={value ? true : false}>
+          Generate QR code!
+        </Button> }
 
-      { matrix !== null && <Canvas matrix={matrix} /> }
+        { matrix !== null && <Canvas matrix={matrix} /> }
 
-      { matrix !== null && <Button value={null} func={handleResetButton}>
-        Create a new QR code!  
-      </Button>}
+        { matrix !== null && <Button value={null} func={handleResetButton}>
+          Create a new QR code!  
+        </Button>}
+      </div>
     </div>
   );
 }
