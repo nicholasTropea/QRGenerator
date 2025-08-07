@@ -79,12 +79,15 @@ export default function Home() {
           <span id={styles.textBar}> | </span>
         </h1>
 
-        <p className={styles.infoText}>
-          This tool can generate a QR code for anything you want: text, numbers, website URLs, even kanji characters!
-          To see an in-depth list of what you can and cannot generate as a QR code, check the <a>what can I encode?</a> page! 
-        </p>
-        
         {/* Conditional components, they render based on the presence/absence of the QR */}
+
+        {
+          matrix === null &&
+          <p className={styles.infoText}>
+            This tool can generate a QR code for anything you want: text, numbers, website URLs, even kanji characters!
+            To see an in-depth list of what you can and cannot generate as a QR code, check the <a>what can I encode?</a> page! 
+          </p>
+        }
 
         { 
           matrix === null && 
