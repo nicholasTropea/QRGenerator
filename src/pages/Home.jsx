@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+
 import Button from '../components/Button.jsx';
 import InputField from '../components/InputField.jsx';
 import Canvas from '../components/Canvas.jsx';
+
 import styles from '../styles/Home.module.scss';
+
 import main from '../utils/main.js';
 
 export default function Home() {
@@ -67,12 +70,6 @@ export default function Home() {
     setValue('');
   }
 
-  const switchInput = () => {
-    
-    
-    let chars = Array.from(titleVal);
-  }
-
   return (
     <div className={styles.main}>
       <div className={styles.overlay}>
@@ -104,7 +101,7 @@ export default function Home() {
           <Button 
             value={value} 
             func={handleMatrixGeneration} 
-            glowing={value ? true : false}
+            classes={styles.glowButton + (value ? ' ' + styles.glowing : '')}
           >
             Generate QR code!
           </Button> 
