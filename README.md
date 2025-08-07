@@ -2,11 +2,12 @@
 
 A from-scratch QR code generator built without external libraries. Features a clean web interface and demonstrates complete QR code encoding implementation including error correction.
 
-🔗 **[Live Demo](nicholasTropea.github.io/QRGenerator/)**
+🔗 **[Live Demo](https://nicholasTropea.github.io/QRGenerator/)**
 
-![GitHub Pages](https://img.shields.io/github/deployments/username/repo/github-pages)
+![GitHub Pages](https://img.shields.io/github/deployments/nicholasTropea/QRGenerator/github-pages)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
-![No Dependencies](https://img.shields.io/badge/Dependencies-None-green)
+![React](https://img.shields.io/badge/React-18+-blue)
+![No Dependencies](https://img.shields.io/badge/QR_Algorithm-Zero_Dependencies-green)
 
 ## ✨ Features
 
@@ -20,11 +21,11 @@ A from-scratch QR code generator built without external libraries. Features a cl
 
 ![QR Generator Demo](screenshots/demo.gif)
 
-Try it live: [QR Generator](nicholasTropea.github.io/QRGenerator/)
+Try it live: [QR Generator](https://nicholasTropea.github.io/QRGenerator/)
 
 ### Example Usage
 - Enter text: `"Hello World"`
-- Press the "Generate QR Code!" button.
+- Press the "Generate QR Code!" button
 - Download or copy the generated QR code
 
 ## 🔧 Technical Details
@@ -32,7 +33,7 @@ Try it live: [QR Generator](nicholasTropea.github.io/QRGenerator/)
 ### QR Code Implementation
 - **Encoding**: Supports Numeric, Alphanumeric, Byte, and Kanji modes
 - **Error Correction**: Reed-Solomon error correction (L, M, Q, H levels)
-- **Versions**: QR versions 1-40 (21x21 to 177x177 modules)
+- **Versions**: QR versions 1 - 40 (21x21 to 177x177 modules)
 - **Masking**: All 8 mask patterns implemented
 
 ### Frontend
@@ -44,23 +45,22 @@ Try it live: [QR Generator](nicholasTropea.github.io/QRGenerator/)
 
 ### Run Locally
 ```bash
-git clone https://github.com/username/qr-generator
-cd qr-generator
-# Open index.html in your browser
-# Or serve with a local server:
-python -m http.server 8000
+git clone https://github.com/nicholasTropea/QRGenerator.git
+cd QRGenerator
+npm install
+npm run dev
 ```
 
 ## 📁 Project Structure
 
 ```
-qr-generator/
-├── README.md 
+QRGenerator/
+├── README.md
 ├── index.html                                  # Main HTML file
 └── src/
     ├── main.jsx                                # Main JSX file
-    ├── App.jsx             
-    ├── App.css             
+    ├── App.jsx            
+    ├── App.css            
     ├── index.scss          
     ├── utils/                                  # JS files of QR Generator implementation
     │   ├── main.js                             # Main JS file
@@ -101,7 +101,7 @@ MIT License - see [LICENSE.md](LICENSE.md) for details
 
 ## 🙏 Acknowledgments
 
-- QR Code specification by Denso Wave
+- QR Code Generation guide by [Thonky Game Guides](https://www.thonky.com/qr-code-tutorial/)
 - Reed-Solomon error correction algorithm
 - Inspiration from the need to understand QR codes from first principles
 
