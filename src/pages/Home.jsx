@@ -88,22 +88,39 @@ export default function Home() {
         </p>
         
         {/* Conditional components, they render based on the presence/absence of the QR */}
-        { matrix === null && <InputField 
-          classes={styles.inputField} 
-          placeHolder={"Place your input here!"} 
-          value={value}
-          setValue={setValue}
-        /> }
 
-        { matrix === null && <Button value={value} func={handleMatrixGeneration} glowing={value ? true : false}>
-          Generate QR code!
-        </Button> }
+        { 
+          matrix === null && 
+          <InputField 
+            classes={styles.inputField} 
+            placeHolder={"Place your input here!"} 
+            value={value}
+            setValue={setValue}
+          /> 
+        }
+
+        { 
+          matrix === null &&
+          <Button 
+            value={value} 
+            func={handleMatrixGeneration} 
+            glowing={value ? true : false}
+          >
+            Generate QR code!
+          </Button> 
+        }
 
         { matrix !== null && <Canvas matrix={matrix} /> }
 
-        { matrix !== null && <Button value={null} func={handleResetButton}>
-          Create a new QR code!  
-        </Button>}
+        { 
+          matrix !== null && 
+          <Button 
+            value={null} 
+            func={handleResetButton}
+          >
+            Create a new QR code!  
+          </Button>
+        }
       </div>
     </div>
   );
