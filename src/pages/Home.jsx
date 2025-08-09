@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 import Overlay from '../components/Overlay.jsx';
 import HomeTitle from '../components/HomeTitle.jsx';
@@ -12,6 +13,7 @@ import styles from '../styles/Home.module.scss';
 import main from '../utils/main.js';
 
 export default function Home() {
+  const isDesktop = useMediaQuery({ minWidth : 768 }); // Tablet & up
   const [value, setValue] = useState('');
   const [matrix, setMatrix] = useState(null);
 
@@ -38,7 +40,7 @@ export default function Home() {
         matrix === null ?
         (
           <>
-            <HomeInfoText /> 
+            { isDesktop && <HomeInfoText /> } 
 
             <InputField 
               classes={styles.inputField} 
