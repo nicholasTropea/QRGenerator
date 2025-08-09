@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import Overlay from '../components/Overlay.jsx';
 import HomeTitle from '../components/HomeTitle.jsx';
+import HomeInfoText from '../components/HomeInfoText.jsx';
 import InputField from '../components/InputField.jsx';
 import Button from '../components/Button.jsx';
 import Canvas from '../components/Canvas.jsx';
@@ -33,13 +34,7 @@ export default function Home() {
 
       {/* Conditional components, they render based on the presence/absence of the QR */}
 
-      {
-        matrix === null &&
-        <p className={styles.infoText}>
-          This tool can generate a QR code for anything you want: text, numbers, website URLs, even kanji characters!
-          To see an in-depth list of what you can and cannot generate as a QR code, check the <a>what can I encode?</a> page! 
-        </p>
-      }
+      { matrix === null && <HomeInfoText /> }
 
       { 
         matrix === null && 
