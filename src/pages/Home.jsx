@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Overlay from '../components/Overlay.jsx';
 import HomeTitle from '../components/HomeTitle.jsx';
