@@ -1,0 +1,23 @@
+.title {
+    color: white;
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 3vh;
+}
+
+.phrase {
+    color: gold;
+}
+
+.bar {
+    font-size: 1em;
+
+    animation: fadeInOut 500ms infinite alternate;
+
+    @at-root {
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    }
+}
