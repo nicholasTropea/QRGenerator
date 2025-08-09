@@ -50,7 +50,7 @@ export default function Home() {
             <Button 
               value={value} 
               func={handleMatrixGeneration} 
-              classes={styles.glowButton + (value ? ' ' + styles.glowing : '')}
+              classes={`${styles.glowButton} ${(value ? styles.glowing : '')}`}
             >
               Generate QR code!
             </Button> 
