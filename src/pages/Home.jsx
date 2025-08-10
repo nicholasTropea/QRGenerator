@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 import Overlay from '../components/Overlay.jsx';
+import Footer from '../components/Footer.jsx';
 import HomeTitle from '../components/HomeTitle.jsx';
 import HomeInfoText from '../components/HomeInfoText.jsx';
 import InputField from '../components/InputField.jsx';
@@ -32,6 +33,7 @@ export default function Home() {
   return (
     <div className={styles.main}>
       <Overlay />
+      <Footer />
       <HomeTitle />
 
       {/* Conditional components, they render based on the presence/absence of the QR */}
