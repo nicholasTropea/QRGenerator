@@ -1,16 +1,14 @@
 .buttonField {
     z-index: 1;
+    position: relative; // For before and after elements
 
-    position: relative;
+    min-width: 200px;
+    min-height: 50px;
+    border-radius: 2em;
+
     background-color: rgba(0, 0, 0, 0.3);
     text-align: center;
-    font-size: 1.2em;
     border: none;
-    border-radius: 1.5em;
-    width: 15vw;  
-    height: 8vh;
-    min-width: 300px;
-    min-height: 50px;
     
     &:focus {
         outline: none;
