@@ -8,10 +8,22 @@
     border-radius: 2em;
 
     text-align: center;
+    color: white;
     border: none;
     background-color: rgba(255, 255, 255, 0.1);    
 
     transition: border 100ms ease;
+
+    &::-webkit-input-placeholder, /* Chrome, Safari, Edge (Chromium) */
+    &:-moz-placeholder,           /* Firefox 4 - 18 */
+    &::-moz-placeholder,          /* Firefox 19+ */
+    &:-ms-input-placeholder,      /* IE 10-11 */
+    &::-ms-input-placeholder,     /* Edge (Legacy) */
+    &::placeholder {              /* Standard syntax */
+        color: white;
+        opacity: 1;
+    }
+
 
     &:focus {
         outline: none;
