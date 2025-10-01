@@ -1,20 +1,60 @@
 import { useState } from 'react';
 import styles from '../styles/Home.module.scss';
 import main from '../utils/main.js';
+import Loading from '../components/Loading';
 
 export default function Home() {
   const [input, setInput] = useState('');
   const [qrMatrix, setQRMatrix] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [transitionState, setTransitionState] = useState(''); // '', 'enter', or 'exit'
+  const [containerHeight, setContainerHeight] = useState(null);
+
+  const handleStateTransition = (from, to, duration = 400) => {
+    const container = document.querySelector(`.${styles.container}`);
+    if (container) {
+      const height = container.offsetHeight;
+      setContainerHeight(height);
+      container.style.height = `${height}px`;
+    }
+
+    setTransitionState('exit');
+    setTimeout(() => {
+      from(false);
+      to(true);
+      setTransitionState('enter');
+      
+      // Allow the new content to render
+      setTimeout(() => {
+        const newHeight = container?.scrollHeight;
+        if (container && newHeight) {
+          container.style.height = `${newHeight}px`;
+        }
+        
+        // Remove fixed height after transition
+        setTimeout(() => {
+          if (container) {
+            container.style.height = '';
+          }
+          setTransitionState('');
+        }, 400);
+      }, 50);
+    }, duration);
+  };
 
   const handleGenerate = () => {
     if (!input) return;
-    const matrix = main(input);
-    setQRMatrix(matrix);
+    handleStateTransition(() => {}, () => setIsLoading(true));
+    
+    // Artificial delay to show loading state
+    setTimeout(() => {
+      const matrix = main(input);
+      handleStateTransition(() => setIsLoading(false), () => setQRMatrix(matrix));
+    }, 1200);
   };
 
   const handleReset = () => {
-    setQRMatrix(null);
-    setInput('');
+    handleStateTransition(() => setQRMatrix(null), () => setInput(''));
   };
 
   const handleDownload = () => {
@@ -62,8 +102,10 @@ export default function Home() {
           Generate QR Codes<span className={styles.highlight}>instantly</span>
         </h1>
 
-        {!qrMatrix ? (
-          <div className={styles.inputSection}>
+        {isLoading ? (
+          <Loading className={transitionState} />
+        ) : !qrMatrix ? (
+          <div className={`${styles.inputSection} ${transitionState ? styles[transitionState] : ''}`}>
             <p className={styles.description}>
               Create QR codes for text, URLs, contact information, or any other data.
             </p>
@@ -86,8 +128,8 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className={styles.qrSection}>
-            <div className={styles.qrCode}>
+          <div className={`${styles.resultSection} ${transitionState ? styles[transitionState] : ''}`}>
+            <div className={styles.qrContainer}>
               {qrMatrix.map((row, i) => (
                 <div key={i} className={styles.qrRow}>
                   {row.map((cell, j) => (

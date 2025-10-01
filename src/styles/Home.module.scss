@@ -92,61 +92,71 @@
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
   width: 100%;
-  max-width: 640px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.3) 100%
-  );
-  border-radius: 1.5rem;
-  box-shadow: 
-    0 25px 45px rgba(0, 0, 0, 0.2),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4);
-  padding: 2.5rem;
-  backdrop-filter: blur(20px);
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   position: relative;
-  z-index: 2;
   overflow: hidden;
+  transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  will-change: height, opacity;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
   
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 1.5rem;
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.4),
-      rgba(255, 255, 255, 0.1)
-    );
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+  & > div {
+    width: 100%;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+    will-change: opacity, transform;
+    
+    &.exit {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    
+    &.enter {
+      opacity: 0;
+      transform: translateY(20px);
+    }
   }
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  will-change: height, opacity;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(
-        circle at 50% 0%, 
-        rgba(255, 255, 255, 0.3),
-        transparent 70%
-      );
-    pointer-events: none;
-  }
-  
-  @media (max-width: 640px) {
-    padding: 1.75rem;
+  & > div {
+    width: 100%;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+    will-change: opacity, transform;
+    
+    &.exit {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    
+    &.enter {
+      opacity: 0;
+      transform: translateY(20px);
+    }
   }
 }
 
@@ -280,24 +290,28 @@
   }
 }
 
-.qrSection {
+.resultSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  width: 100%;
 }
 
-.qrCode {
+.qrContainer {
   background: white;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  display: inline-flex;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
 }
 
 .qrRow {
   display: flex;
+  height: 8px;
 }
 
 .qrCell {
